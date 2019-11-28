@@ -13,6 +13,9 @@
       <UniqueIdentifier>{2d1540c4-ba5a-49fa-9ba8-977e4b6293fc}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;manifest</Extensions>
     </Filter>
+    <Filter Include="up6_com">
+      <UniqueIdentifier>{04e21d1f-9415-4fc4-992c-75b46be3985b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -22,6 +25,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="up6Event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -37,6 +43,12 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpUploaderApp_i.h">
+      <Filter>up6_com</Filter>
+    </ClInclude>
+    <ClInclude Include="up6Event.h">
+      <Filter>up6_com</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #pragma once
+class up6Event;
 
 class CMainDlg : public CDialogImpl<CMainDlg>
 {
@@ -28,7 +29,17 @@ public:
 	LRESULT OnCancel(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT openFile_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
+	void files_opend(std::string fileName,std::string filePath){
+		this->m_edtMsg.AppendText(L"文件名称：");
+		this->m_edtMsg.AppendText(Encoder::from_utf8(fileName).c_str());
+		this->m_edtMsg.AppendText(L"\r\n");
+		this->m_edtMsg.AppendText(L"文件路径：");
+		this->m_edtMsg.AppendText(Encoder::from_utf8(filePath).c_str());
+		this->m_edtMsg.AppendText(L"\r\n");
+	}
+
 private:
 	CButton m_btnOpenFile;
 	CEdit m_edtMsg;
+	std::shared_ptr<up6Event> m_up6Ent;
 };

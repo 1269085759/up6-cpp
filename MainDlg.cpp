@@ -6,6 +6,7 @@
 #include "resource.h"
 
 #include "MainDlg.h"
+#include "up6Event.h"
 
 LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
@@ -48,21 +49,31 @@ LRESULT CMainDlg::openFile_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*
 {
 	CLSID clsid;
 	HRESULT hr = ::CLSIDFromProgID(L"Xproer.HttpPartition6.1", &clsid);
-	SUCCEEDED(hr);
+	if (!SUCCEEDED(hr))
+	{
+		MessageBoxW(L"创建组件失败，请先安装或注册组件", L"错误", MB_OK);
+		return 0;
+	}
 
 	CComPtr < IUnknown > spUnk;
 	hr = ::CoCreateInstance(clsid, NULL, CLSCTX_ALL, IID_IUnknown, (LPVOID *)&spUnk);
 	CComDispatchDriver up6 = spUnk;
+	this->m_up6Ent = std::make_shared<up6Event>();
+	this->m_up6Ent->m_entFilesOpen.connect(boost::bind(&CMainDlg::files_opend, this, _1, _2));
+	this->m_up6Ent->DispEventAdvise(spUnk);
 
 	CComVariant version;
 	up6.GetPropertyByName(L"Version", &version);
 
-	std::wstring js = L"{\"name\":\"open_folders\"}";
+	std::wstring js = L"{\"name\":\"open_files\"}";
 	CComVariant v1(js.c_str());
 	CComVariant ret;
 	hr = up6.Invoke1(
 		L"postMessage",
 		&v1,			
 		&ret);		
+
+	this->m_up6Ent->DispEventUnadvise(spUnk);
+
 	return 0;
 }

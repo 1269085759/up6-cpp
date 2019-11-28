@@ -15,7 +15,7 @@
 #include <atlapp.h>
 
 extern CAppModule _Module;
-
+#include <atlcom.h>
 #include <atlwin.h>
 
 #include <atlframe.h>
@@ -33,4 +33,13 @@ extern CAppModule _Module;
 #endif
 
 #include <string>
+#include <memory>
 using namespace std;
+#include <boost/signals2/signal.hpp>
+using namespace boost::signals2;
+
+#include "json/json.h"
+#include "core-head.h"
+#include "link-json.h"
+#include "link-core.h"
+#include "link-crypt.h"
