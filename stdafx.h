@@ -32,3 +32,5 @@ extern CAppModule _Module;
 #endif
 #endif
 
+#include <string>
+using namespace std;
