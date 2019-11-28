@@ -44,10 +44,10 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HttpUploaderApp_i.h">
+    <ClInclude Include="up6Event.h">
       <Filter>up6_com</Filter>
     </ClInclude>
-    <ClInclude Include="up6Event.h">
+    <ClInclude Include="HttpUploaderApp_i.h">
       <Filter>up6_com</Filter>
     </ClInclude>
   </ItemGroup>
@@ -60,5 +60,8 @@
     <Image Include="res\wtlApp.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="readme.txt" />
   </ItemGroup>
 </Project>
