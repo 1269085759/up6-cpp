@@ -19,5 +19,34 @@ public:
 		SINK_ENTRY_EX(0, DIID__IHttpPartitionEvents, 1, recvMessage)
 	END_SINK_MAP()
 
-	boost::signals2::signal<void(string fn, string ps)> m_entFilesOpen;
+	boost::signals2::signal<void(string, string)> entSelFile;
+	boost::signals2::signal<void(Json::Value&)> entSelFolder;
+	boost::signals2::signal<void(Json::Value&)> entPostProcess;
+	boost::signals2::signal<void(Json::Value&)> entPostError;
+	boost::signals2::signal<void(Json::Value&)> entPostComplete;
+	boost::signals2::signal<void(Json::Value&)> entPostStoped;
+	boost::signals2::signal<void(Json::Value&)> entScanProcess;
+	boost::signals2::signal<void(Json::Value&)> entScanComplete;
+	boost::signals2::signal<void(Json::Value&)> entUpdateFolderComplete;
+	boost::signals2::signal<void(Json::Value&)> entMd5Process;
+	boost::signals2::signal<void(Json::Value&)> entMd5Complete;
+	boost::signals2::signal<void(Json::Value&)> entMd5Error;
+	boost::signals2::signal<void(Json::Value&)> entAddFolderErr;
+	boost::signals2::signal<void(Json::Value&)> entLoadComplete;
+
+private:
+	void open_files(Json::Value& val);
+	void open_folders(Json::Value& val);
+	void post_process(Json::Value& val);
+	void post_error(Json::Value& val);
+	void post_complete(Json::Value& val);
+	void post_stoped(Json::Value& val);
+	void scan_process(Json::Value& val);
+	void scan_complete(Json::Value& val);
+	void update_folder_complete(Json::Value& val);
+	void md5_process(Json::Value& val);
+	void md5_complete(Json::Value& val);
+	void md5_error(Json::Value& val);
+	void add_folder_error(Json::Value& val);
+	void load_complete(Json::Value& val);
 };

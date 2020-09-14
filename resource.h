@@ -6,8 +6,9 @@
 #define IDR_MAINFRAME                   128
 #define IDD_MAINDLG                     129
 #define BTN_OPENFILE                    1000
-#define IDC_EDIT1                       1001
 #define TB_FILES                        1001
+#define BTN_OPENFILE2                   1002
+#define BTN_OPENFOLDER                  1002
 
 // Next default values for new objects
 // 
