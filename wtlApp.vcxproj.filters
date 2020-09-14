@@ -27,7 +27,7 @@
     <ClCompile Include="MainDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="up6Event.cpp">
+    <ClCompile Include="Up6Impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,10 +44,10 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="up6Event.h">
+    <ClInclude Include="HttpUploaderApp_i.h">
       <Filter>up6_com</Filter>
     </ClInclude>
-    <ClInclude Include="HttpUploaderApp_i.h">
+    <ClInclude Include="Up6Impl.h">
       <Filter>up6_com</Filter>
     </ClInclude>
   </ItemGroup>

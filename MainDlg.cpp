@@ -6,7 +6,7 @@
 #include "resource.h"
 
 #include "MainDlg.h"
-#include "up6Event.h"
+#include "Up6Impl.h"
 
 LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
@@ -36,7 +36,6 @@ LRESULT CMainDlg::OnAppAbout(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*
 
 LRESULT CMainDlg::OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	this->up6_component_release();
 	// TODO: Add validation code 
 	EndDialog(wID);
 	return 0;
@@ -44,89 +43,39 @@ LRESULT CMainDlg::OnOK(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /
 
 LRESULT CMainDlg::OnCancel(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	this->up6_component_release();
 	EndDialog(wID);
 	return 0;
 }
 
 LRESULT CMainDlg::openFile_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	/*CLSID clsid;
-	HRESULT hr = ::CLSIDFromProgID(L"Xproer.HttpPartition6.1", &clsid);
-	if (!SUCCEEDED(hr))
-	{
-		MessageBoxW(L"创建组件失败，请先安装或注册组件", L"错误", MB_OK);
-		return 0;
-	}
-
-	CComPtr < IUnknown > spUnk;
-	hr = ::CoCreateInstance(clsid, NULL, CLSCTX_ALL, IID_IUnknown, (LPVOID *)&spUnk);
-	CComDispatchDriver up6 = spUnk;
-	this->up6Cmp = spUnk;
-	this->m_up6Ent = std::make_shared<up6Event>();
-	this->m_up6Ent->entSelFile.connect(boost::bind(&CMainDlg::up6_sel_files, this, _1, _2));
-	this->m_up6Ent->DispEventAdvise(spUnk);*/
-
-	CComVariant version;
-	this->up6Cmp.GetPropertyByName(L"Version", &version);
-
-	std::wstring js = L"{\"name\":\"open_files\"}";
-	CComVariant v1(js.c_str());
-	CComVariant ret;
-	HRESULT hr = this->up6Cmp.Invoke1(
-		L"postMessage",
-		&v1,			
-		&ret);
+	this->m_up6->openFiles();
 
 	return 0;
 }
 
 LRESULT CMainDlg::openFolder_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	std::wstring js = L"{\"name\":\"open_folders\"}";
-	CComVariant v1(js.c_str());
-	CComVariant ret;
-	HRESULT hr = this->up6Cmp.Invoke1(
-		L"postMessage",
-		&v1,
-		&ret);
+	this->m_up6->openFolders();
 	return 0;
 }
 
 void CMainDlg::up6_component_init()
 {
-	CLSID clsid;
-	HRESULT hr = ::CLSIDFromProgID(L"Xproer.HttpPartition6.1", &clsid);
-	if (!SUCCEEDED(hr))
-	{
-		MessageBoxW(L"创建组件失败，请先安装或注册组件", L"错误", MB_OK);
-		return;
-	}
-
-	//CComPtr < IUnknown > spUnk;
-	hr = ::CoCreateInstance(clsid, NULL, CLSCTX_ALL, IID_IUnknown, (LPVOID *)&this->spUp6);
-	//CComDispatchDriver up6 = spUnk;
-	this->up6Cmp = this->spUp6;
-	this->m_up6Ent = std::make_shared<up6Event>();
-	this->m_up6Ent->entSelFile.connect(boost::bind(&CMainDlg::up6_sel_files, this, _1, _2));
-	this->m_up6Ent->entSelFolder.connect(boost::bind(&CMainDlg::up6_sel_folder, this, _1));
-	this->m_up6Ent->entPostProcess.connect(boost::bind(&CMainDlg::up6_post_process, this, _1));
-	this->m_up6Ent->entPostError.connect(boost::bind(&CMainDlg::up6_post_error, this, _1));
-	this->m_up6Ent->entPostComplete.connect(boost::bind(&CMainDlg::up6_post_complete, this, _1));
-	this->m_up6Ent->entPostStoped.connect(boost::bind(&CMainDlg::up6_post_stoped, this, _1));
-	this->m_up6Ent->entScanProcess.connect(boost::bind(&CMainDlg::up6_scan_process, this, _1));
-	this->m_up6Ent->entScanComplete.connect(boost::bind(&CMainDlg::up6_scan_complete, this, _1));
-	this->m_up6Ent->entUpdateFolderComplete.connect(boost::bind(&CMainDlg::up6_update_fd_complete, this, _1));
-	this->m_up6Ent->entMd5Process.connect(boost::bind(&CMainDlg::up6_md5_process, this, _1));
-	this->m_up6Ent->entMd5Complete.connect(boost::bind(&CMainDlg::up6_md5_complete, this, _1));
-	this->m_up6Ent->entMd5Error.connect(boost::bind(&CMainDlg::up6_md5_error, this, _1));
-	this->m_up6Ent->entLoadComplete.connect(boost::bind(&CMainDlg::up6_load_complete, this, _1));
-	this->m_up6Ent->DispEventAdvise(this->spUp6);
-}
-
-void CMainDlg::up6_component_release()
-{
-	this->m_up6Ent->DispEventUnadvise(spUp6);
+	this->m_up6 = std::make_shared<Up6Impl>();
+	this->m_up6->entSelFile.connect(boost::bind(&CMainDlg::up6_sel_files, this, _1, _2));
+	this->m_up6->entSelFolder.connect(boost::bind(&CMainDlg::up6_sel_folder, this, _1));
+	this->m_up6->entPostProcess.connect(boost::bind(&CMainDlg::up6_post_process, this, _1));
+	this->m_up6->entPostError.connect(boost::bind(&CMainDlg::up6_post_error, this, _1));
+	this->m_up6->entPostComplete.connect(boost::bind(&CMainDlg::up6_post_complete, this, _1));
+	this->m_up6->entPostStoped.connect(boost::bind(&CMainDlg::up6_post_stoped, this, _1));
+	this->m_up6->entScanProcess.connect(boost::bind(&CMainDlg::up6_scan_process, this, _1));
+	this->m_up6->entScanComplete.connect(boost::bind(&CMainDlg::up6_scan_complete, this, _1));
+	this->m_up6->entUpdateFolderComplete.connect(boost::bind(&CMainDlg::up6_update_fd_complete, this, _1));
+	this->m_up6->entMd5Process.connect(boost::bind(&CMainDlg::up6_md5_process, this, _1));
+	this->m_up6->entMd5Complete.connect(boost::bind(&CMainDlg::up6_md5_complete, this, _1));
+	this->m_up6->entMd5Error.connect(boost::bind(&CMainDlg::up6_md5_error, this, _1));
+	this->m_up6->entLoadComplete.connect(boost::bind(&CMainDlg::up6_load_complete, this, _1));
 }
 
 void CMainDlg::up6_sel_files(std::string fileName, std::string filePath)

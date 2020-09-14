@@ -7,15 +7,23 @@
 #include "HttpUploaderApp_i.h"
 //#include "HttpUploaderApp_i.c"
 
-class up6Event : public IDispEventImpl<0,up6Event,&DIID__IHttpPartitionEvents,&LIBID_HttpUploaderAppLib,1,0>
+/*
+   使用：
+   Up6Impl* up6 = new Up6Impl();
+   //绑定事件
+   up6->entSelFile.connect(boost::bind(&CMainDlg::up6_sel_files, this, _1, _2));
+   //调用接口
+   up6->openFiles();
+*/
+class Up6Impl : public IDispEventImpl<0,Up6Impl,&DIID__IHttpPartitionEvents,&LIBID_HttpUploaderAppLib,1,0>
 {
 public:
-	up6Event();
-	~up6Event();
+	Up6Impl();
+	~Up6Impl();
 
 	STDMETHOD(recvMessage)(BSTR msg);
 
-	BEGIN_SINK_MAP(up6Event)
+	BEGIN_SINK_MAP(Up6Impl)
 		SINK_ENTRY_EX(0, DIID__IHttpPartitionEvents, 1, recvMessage)
 	END_SINK_MAP()
 
@@ -34,19 +42,33 @@ public:
 	boost::signals2::signal<void(Json::Value&)> entAddFolderErr;
 	boost::signals2::signal<void(Json::Value&)> entLoadComplete;
 
+public:
+	//api
+	void init();
+	void getVersion();
+	void openFiles();
+	void openFolders();
+	void pasteFiles();
+
 private:
-	void open_files(Json::Value& val);
-	void open_folders(Json::Value& val);
-	void post_process(Json::Value& val);
-	void post_error(Json::Value& val);
-	void post_complete(Json::Value& val);
-	void post_stoped(Json::Value& val);
-	void scan_process(Json::Value& val);
-	void scan_complete(Json::Value& val);
-	void update_folder_complete(Json::Value& val);
-	void md5_process(Json::Value& val);
-	void md5_complete(Json::Value& val);
-	void md5_error(Json::Value& val);
-	void add_folder_error(Json::Value& val);
-	void load_complete(Json::Value& val);
+	//event
+	void ent_open_files(Json::Value& val);
+	void ent_open_folders(Json::Value& val);
+	void ent_post_process(Json::Value& val);
+	void ent_post_error(Json::Value& val);
+	void ent_post_complete(Json::Value& val);
+	void ent_post_stoped(Json::Value& val);
+	void ent_scan_process(Json::Value& val);
+	void ent_scan_complete(Json::Value& val);
+	void ent_update_folder_complete(Json::Value& val);
+	void ent_md5_process(Json::Value& val);
+	void ent_md5_complete(Json::Value& val);
+	void ent_md5_error(Json::Value& val);
+	void ent_add_folder_error(Json::Value& val);
+	void ent_load_complete(Json::Value& val);
+
+private:
+	CComPtr<IUnknown> up6Ptr;
+	CComDispatchDriver up6Cmp;//
+	bool m_inited;//初始化
 };

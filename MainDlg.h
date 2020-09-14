@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #pragma once
-class up6Event;
+class Up6Impl;
 
 class CMainDlg : public CDialogImpl<CMainDlg>
 {
@@ -32,7 +32,6 @@ public:
 	LRESULT openFolder_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
 	void up6_component_init();
-	void up6_component_release();
 	//event
 	void up6_sel_files(std::string fileName,std::string filePath);
 	void up6_sel_folder(Json::Value& v);
@@ -50,9 +49,7 @@ public:
 	void up6_load_complete(Json::Value& v);
 
 private:
-	CComPtr < IUnknown > spUp6;
-	CComDispatchDriver up6Cmp;//
 	CButton m_btnOpenFile;
 	CEdit m_edtMsg;
-	std::shared_ptr<up6Event> m_up6Ent;
+	std::shared_ptr<Up6Impl> m_up6;
 };
