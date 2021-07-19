@@ -104,6 +104,19 @@ void Up6Impl::pasteFiles()
 		&ret);
 }
 
+void Up6Impl::addFileLoc(const wstring& pathLoc)
+{
+	if (!this->m_inited) return;
+
+	std::wstring js = L"{\"name\":\"add_file\",\"pathLoc\":\"" + pathLoc + L"\"}";
+	CComVariant v1(js.c_str());
+	CComVariant ret;
+	HRESULT hr = this->up6Cmp.Invoke1(
+		L"postMessage",
+		&v1,
+		&ret);
+}
+
 void Up6Impl::ent_open_files(Json::Value& val)
 {
 	int count = val["files"].size();

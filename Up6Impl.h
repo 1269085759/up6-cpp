@@ -49,6 +49,7 @@ public:
 	void openFiles();
 	void openFolders();
 	void pasteFiles();
+	void addFileLoc(const wstring& pathLoc);
 
 private:
 	//event

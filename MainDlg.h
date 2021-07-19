@@ -17,6 +17,7 @@ public:
 		COMMAND_ID_HANDLER(IDCANCEL, OnCancel)
 		COMMAND_ID_HANDLER(BTN_OPENFILE, openFile_click)
 		COMMAND_ID_HANDLER(BTN_OPENFOLDER, openFolder_click)
+		COMMAND_ID_HANDLER(BTN_ADDLOC, addFileLoc_click)
 	END_MSG_MAP()
 
 // Handler prototypes (uncomment arguments if needed):
@@ -30,6 +31,7 @@ public:
 	LRESULT OnCancel(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT openFile_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT openFolder_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT addFileLoc_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
 	void up6_component_init();
 	//event

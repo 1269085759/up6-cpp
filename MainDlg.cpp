@@ -60,6 +60,15 @@ LRESULT CMainDlg::openFolder_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCt
 	return 0;
 }
 
+LRESULT CMainDlg::addFileLoc_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	CString txt;
+	auto win = GetDlgItem(IDC_EDITPATHLOC);
+	win.GetWindowTextW(txt);
+	this->m_up6->addFileLoc((LPCWSTR)txt);
+	return 0;
+}
+
 void CMainDlg::up6_component_init()
 {
 	this->m_up6 = std::make_shared<Up6Impl>();
