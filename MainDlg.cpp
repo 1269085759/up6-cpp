@@ -85,6 +85,17 @@ void CMainDlg::up6_component_init()
 	this->m_up6->entMd5Complete.connect(boost::bind(&CMainDlg::up6_md5_complete, this, _1));
 	this->m_up6->entMd5Error.connect(boost::bind(&CMainDlg::up6_md5_error, this, _1));
 	this->m_up6->entLoadComplete.connect(boost::bind(&CMainDlg::up6_load_complete, this, _1));
+	
+	//
+	auto dir = Utils::curDir();
+	dir.append(L"config.js");
+	this->m_up6->init(dir);
+}
+
+void CMainDlg::addMsg(const wstring& v)
+{
+	this->m_edtMsg.AppendText(v.c_str());
+	this->m_edtMsg.AppendText(L"\r\n");
 }
 
 void CMainDlg::up6_sel_files(std::string fileName, std::string filePath)
@@ -138,7 +149,7 @@ void CMainDlg::up6_scan_process(Json::Value& v)
 
 void CMainDlg::up6_scan_complete(Json::Value& v)
 {
-
+	this->addMsg(L"目录扫描完毕");
 }
 
 void CMainDlg::up6_update_fd_complete(Json::Value& v)
@@ -148,26 +159,25 @@ void CMainDlg::up6_update_fd_complete(Json::Value& v)
 
 void CMainDlg::up6_md5_process(Json::Value& v)
 {
-
+	this->addMsg(L"md5进度");
 }
 
 void CMainDlg::up6_md5_complete(Json::Value& v)
 {
-
+	this->addMsg(L"md5计算完毕");
 }
 
 void CMainDlg::up6_md5_error(Json::Value& v)
 {
-
+	this->addMsg(L"md5错误");
 }
 
 void CMainDlg::up6_add_folder_err(Json::Value& v)
 {
-
+	this->addMsg(L"添加目录失败");
 }
 
 void CMainDlg::up6_load_complete(Json::Value& v)
 {
-	this->m_edtMsg.AppendText(L"控件初始化完毕");
-	this->m_edtMsg.AppendText(L"\r\n");
+	this->addMsg(L"控件初始化完毕");
 }

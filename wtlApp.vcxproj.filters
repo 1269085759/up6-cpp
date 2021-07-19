@@ -22,6 +22,9 @@
     <Filter Include="ui">
       <UniqueIdentifier>{18c48742-4335-4c07-9016-67f0f0375adb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="components">
+      <UniqueIdentifier>{c74a1b7e-94d2-4553-bdb3-73518d77d221}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -37,7 +40,22 @@
       <Filter>biz</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>biz</Filter>
+    </ClCompile>
+    <ClCompile Include="FileUploader.cpp">
+      <Filter>biz</Filter>
+    </ClCompile>
+    <ClCompile Include="FileData.cpp">
+      <Filter>biz</Filter>
+    </ClCompile>
+    <ClCompile Include="components\MsgData.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="components\ThreadMessage.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="components\MsgCenter.cpp">
+      <Filter>components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -60,7 +78,22 @@
       <Filter>biz</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
-      <Filter>Header Files</Filter>
+      <Filter>biz</Filter>
+    </ClInclude>
+    <ClInclude Include="FileUploader.h">
+      <Filter>biz</Filter>
+    </ClInclude>
+    <ClInclude Include="FileData.h">
+      <Filter>biz</Filter>
+    </ClInclude>
+    <ClInclude Include="components\MsgData.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="components\ThreadMessage.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="components\MsgCenter.h">
+      <Filter>components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

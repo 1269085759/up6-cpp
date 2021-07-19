@@ -4,9 +4,6 @@
 Up6Impl::Up6Impl()
 {
 	this->m_inited = false;
-	auto dir = Utils::curDir();
-	dir.append(L"config.js");
-	this->init(dir);
 }
 
 Up6Impl::~Up6Impl()
@@ -64,7 +61,11 @@ void Up6Impl::init(const wstring& cfgFile)
 	auto data = Utils::ReadAll(cfgFile, len);
 	Json::Value cfg;
 	Json::Reader jr;
-	if (jr.parse(data.get(),cfg))
+	Utils::clearComment(data);
+
+	Utils::WriteAll(Utils::curDir() + L"config.1.js", data);
+
+	if (jr.parse(data.c_str(),cfg))
 	{
 		Json::Value o;
 		o["name"] = "init";
@@ -138,6 +139,24 @@ void Up6Impl::addFileLoc(const wstring& pathLoc)
 		L"postMessage",
 		&v1,
 		&ret);
+}
+
+void Up6Impl::postMessage(const string& v)
+{
+	wstring w = Utils::from_utf8(v);
+	CComVariant v1(w.c_str());
+	CComVariant ret;
+	HRESULT hr = this->up6Cmp.Invoke1(
+		L"postMessage",
+		&v1,
+		&ret);
+}
+
+void Up6Impl::postMessage(const Json::Value& v)
+{
+	Json::FastWriter writer;
+	auto str = writer.write(v);
+	this->postMessage(str);
 }
 
 void Up6Impl::ent_open_files(Json::Value& val)

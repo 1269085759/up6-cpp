@@ -38,9 +38,16 @@ using namespace std;
 #include <boost/signals2/signal.hpp>
 using namespace boost::signals2;
 
+#define BIZ_MESSAGE (WM_USER + 100)
+
 #include "json/json.h"
 #include "core-head.h"
 #include "Utils.h"
+#include "Up6Impl.h"
+#include "FileData.h"
+#include "components/MsgCenter.h"
+#include "components/MsgData.h"
+#include "components/ThreadMessage.h"
 #include "link-json.h"
 #include "link-core.h"
 #include "link-crypt.h"

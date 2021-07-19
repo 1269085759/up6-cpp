@@ -9,8 +9,10 @@ public:
 	Utils();
 	~Utils();
 
-	static boost::shared_array<char> ReadAll(const wstring& path, long& fileLength);
+	static string ReadAll(const wstring& path, long& fileLength);
+	static BOOL WriteAll(const wstring& path, const string& data);
 	static string to_utf8(const wstring& v) { return ""; }
 	static wstring from_utf8(const string& a);
-	static wstring curDir(){}
+	static wstring curDir();
+	static void clearComment(string& v);
 };

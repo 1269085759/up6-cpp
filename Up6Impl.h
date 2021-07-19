@@ -50,6 +50,8 @@ public:
 	void openFolders();
 	void pasteFiles();
 	void addFileLoc(const wstring& pathLoc);
+	void postMessage(const string& v);
+	void postMessage(const Json::Value& v);
 
 private:
 	//event

@@ -205,6 +205,11 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="components\MsgCenter.cpp" />
+    <ClCompile Include="components\MsgData.cpp" />
+    <ClCompile Include="components\ThreadMessage.cpp" />
+    <ClCompile Include="FileData.cpp" />
+    <ClCompile Include="FileUploader.cpp" />
     <ClCompile Include="MainDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -217,6 +222,11 @@
     <ClCompile Include="wtlApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="components\MsgCenter.h" />
+    <ClInclude Include="components\MsgData.h" />
+    <ClInclude Include="components\ThreadMessage.h" />
+    <ClInclude Include="FileData.h" />
+    <ClInclude Include="FileUploader.h" />
     <ClInclude Include="HttpUploaderApp_i.h" />
     <ClInclude Include="MainDlg.h" />
     <ClInclude Include="resource.h" />

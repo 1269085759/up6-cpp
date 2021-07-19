@@ -34,6 +34,8 @@ public:
 	LRESULT addFileLoc_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 
 	void up6_component_init();
+	void addMsg(const wstring& v);
+
 	//event
 	void up6_sel_files(std::string fileName,std::string filePath);
 	void up6_sel_folder(Json::Value& v);
