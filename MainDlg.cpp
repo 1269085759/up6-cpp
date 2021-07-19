@@ -168,5 +168,6 @@ void CMainDlg::up6_add_folder_err(Json::Value& v)
 
 void CMainDlg::up6_load_complete(Json::Value& v)
 {
-
+	this->m_edtMsg.AppendText(L"控件初始化完毕");
+	this->m_edtMsg.AppendText(L"\r\n");
 }

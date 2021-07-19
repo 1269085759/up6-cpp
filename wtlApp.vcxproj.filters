@@ -16,6 +16,12 @@
     <Filter Include="up6_com">
       <UniqueIdentifier>{04e21d1f-9415-4fc4-992c-75b46be3985b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="biz">
+      <UniqueIdentifier>{2825e558-149b-480e-9ff6-02985e6ea160}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{18c48742-4335-4c07-9016-67f0f0375adb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -25,9 +31,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>ui</Filter>
     </ClCompile>
     <ClCompile Include="Up6Impl.cpp">
+      <Filter>biz</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,17 +47,20 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MainDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HttpUploaderApp_i.h">
       <Filter>up6_com</Filter>
     </ClInclude>
+    <ClInclude Include="MainDlg.h">
+      <Filter>ui</Filter>
+    </ClInclude>
     <ClInclude Include="Up6Impl.h">
-      <Filter>up6_com</Filter>
+      <Filter>biz</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -63,5 +75,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config.js" />
   </ItemGroup>
 </Project>

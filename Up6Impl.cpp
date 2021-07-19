@@ -4,7 +4,9 @@
 Up6Impl::Up6Impl()
 {
 	this->m_inited = false;
-	this->init();
+	auto dir = Utils::curDir();
+	dir.append(L"config.js");
+	this->init(dir);
 }
 
 Up6Impl::~Up6Impl()
@@ -40,7 +42,7 @@ STDMETHODIMP Up6Impl::recvMessage(BSTR msg)
 	return S_OK;
 }
 
-void Up6Impl::init()
+void Up6Impl::init(const wstring& cfgFile)
 {
 	CLSID clsid;
 	HRESULT hr = ::CLSIDFromProgID(L"Xproer.HttpPartition6.1", &clsid);
@@ -56,6 +58,27 @@ void Up6Impl::init()
 		this->m_inited = true;
 		up6Cmp = up6Ptr;
 		this->DispEventAdvise(up6Ptr);//¹ÒÊÂ¼þ
+	}
+
+	long len = 0;
+	auto data = Utils::ReadAll(cfgFile, len);
+	Json::Value cfg;
+	Json::Reader jr;
+	if (jr.parse(data.get(),cfg))
+	{
+		Json::Value o;
+		o["name"] = "init";
+		o["config"] = cfg;
+		Json::FastWriter writer;
+		auto str = writer.write(o);
+		auto json = Utils::from_utf8(str);
+
+		CComVariant v1(json.c_str());
+		CComVariant ret;
+		HRESULT hr = this->up6Cmp.Invoke1(
+			L"postMessage",
+			&v1,
+			&ret);
 	}
 }
 

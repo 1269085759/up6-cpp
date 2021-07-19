@@ -40,6 +40,7 @@ using namespace boost::signals2;
 
 #include "json/json.h"
 #include "core-head.h"
+#include "Utils.h"
 #include "link-json.h"
 #include "link-core.h"
 #include "link-crypt.h"

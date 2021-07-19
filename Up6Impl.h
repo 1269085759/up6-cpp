@@ -44,7 +44,7 @@ public:
 
 public:
 	//api
-	void init();
+	void init(const wstring& cfgFile);
 	void getVersion();
 	void openFiles();
 	void openFolders();
