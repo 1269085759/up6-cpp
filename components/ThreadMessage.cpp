@@ -4,7 +4,7 @@
 ThreadMessage::ThreadMessage()
 {
 	this->m_form = nullptr;
-	this->m_mc = &MsgCenterIns::instance();
+	this->m_mc = &MsgCenterIns::get_mutable_instance();
 }
 
 ThreadMessage::~ThreadMessage()
@@ -13,7 +13,15 @@ ThreadMessage::~ThreadMessage()
 
 ThreadMessage& ThreadMessage::get()
 {
-	return ThreadMsg::instance();
+	return ThreadMsg::get_mutable_instance();
+}
+
+void ThreadMessage::init(const map < string, boost::function<void(long)>>& es)
+{
+	for (auto& m : es)
+	{
+		this->m_handler.insert(m);
+	}
 }
 
 void ThreadMessage::post( const string& n , long v )

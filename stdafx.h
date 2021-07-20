@@ -4,6 +4,8 @@
 //
 
 #pragma once
+#define _WTL_NO_CSTRING
+#define _WTL_NO_WTYPES
 
 #ifndef STRICT
 #define STRICT
@@ -12,6 +14,8 @@
 #include "targetver.h"
 
 #include <atlbase.h>
+#include <atlstr.h>
+#include <atltypes.h>
 #include <atlapp.h>
 
 extern CAppModule _Module;
@@ -34,14 +38,26 @@ extern CAppModule _Module;
 
 #include <string>
 #include <memory>
+#include <map>
 using namespace std;
+
+#include <boost/serialization/singleton.hpp>
 #include <boost/signals2/signal.hpp>
+#include <boost/assign.hpp>
+#include <boost/function.hpp>
+#include <boost/any.hpp>
+#include <boost/unordered_map.hpp>
+#include <boost/atomic.hpp>
+#include <boost/thread.hpp>
+#include <boost/shared_array.hpp>
+#include <boost/format.hpp>
+#include <boost/bind.hpp>
+using namespace boost::assign;
 using namespace boost::signals2;
 
 #define BIZ_MESSAGE (WM_USER + 100)
 
 #include "json/json.h"
-#include "core-head.h"
 #include "Utils.h"
 #include "Up6Impl.h"
 #include "FileData.h"

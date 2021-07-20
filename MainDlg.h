@@ -4,9 +4,17 @@
 
 #pragma once
 class Up6Impl;
+class FileUploader;
 
 class CMainDlg : public CDialogImpl<CMainDlg>
 {
+	typedef struct _datadef
+	{
+		map<string, std::shared_ptr<FileUploader>> files;
+		Json::Value cfg;//≈‰÷√
+		ThreadMessage* tm;
+		MsgCenter* mc;
+	}DataDef;
 public:
 	enum { IDD = IDD_MAINDLG };
 
@@ -18,6 +26,7 @@ public:
 		COMMAND_ID_HANDLER(BTN_OPENFILE, openFile_click)
 		COMMAND_ID_HANDLER(BTN_OPENFOLDER, openFolder_click)
 		COMMAND_ID_HANDLER(BTN_ADDLOC, addFileLoc_click)
+		MESSAGE_HANDLER(BIZ_MESSAGE, biz_message)
 	END_MSG_MAP()
 
 // Handler prototypes (uncomment arguments if needed):
@@ -32,28 +41,30 @@ public:
 	LRESULT openFile_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT openFolder_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT addFileLoc_click(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT biz_message(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
 	void up6_component_init();
 	void addMsg(const wstring& v);
 
 	//event
-	void up6_sel_files(std::string fileName,std::string filePath);
+	void up6_sel_files(Json::Value& v);
 	void up6_sel_folder(Json::Value& v);
-	void up6_post_process(Json::Value& v);
-	void up6_post_error(Json::Value& v);
-	void up6_post_complete(Json::Value& v);
-	void up6_post_stoped(Json::Value& v);
-	void up6_scan_process(Json::Value& v);
-	void up6_scan_complete(Json::Value& v);
-	void up6_update_fd_complete(Json::Value& v);
-	void up6_md5_process(Json::Value& v);
-	void up6_md5_complete(Json::Value& v);
-	void up6_md5_error(Json::Value& v);
-	void up6_add_folder_err(Json::Value& v);
-	void up6_load_complete(Json::Value& v);
+	void up6_post_process(long v);
+	void up6_post_error(long v);
+	void up6_post_complete(long v);
+	void up6_post_stoped(long v);
+	void up6_scan_process(long v);
+	void up6_scan_complete(long v);
+	void up6_update_fd_complete(long v);
+	void up6_md5_process(long v);
+	void up6_md5_complete(long v);
+	void up6_md5_error(long v);
+	void up6_add_folder_err(long v);
+	void up6_load_complete(long v);
 
 private:
 	CButton m_btnOpenFile;
 	CEdit m_edtMsg;
 	std::shared_ptr<Up6Impl> m_up6;
+	DataDef data;
 };

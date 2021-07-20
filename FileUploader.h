@@ -1,5 +1,6 @@
 #pragma once
 
+class CMainDlg;
 /*
    文件上传对象
 */
@@ -9,9 +10,11 @@ class FileUploader
 	{
 		FileData fileSvr;
 		Up6Impl* up6;
+		CMainDlg* dlg;
+		Json::Value cfg;
 	}DataDef;
 public:
-	FileUploader(Up6Impl* up6);
+	FileUploader(Up6Impl* up6,CMainDlg* dlg);
 	~FileUploader();
 
 	void check_file();

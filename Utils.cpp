@@ -65,6 +65,19 @@ BOOL Utils::WriteAll(const wstring& path, const string& data)
 	return ret;
 }
 
+string Utils::to_utf8(const wstring& v)
+{
+	UINT code = CP_UTF8 ;
+	int u8Len = ::WideCharToMultiByte(code, NULL, v.c_str(), -1, NULL, 0, NULL, NULL);
+	char* szU8 = new char[u8Len + 1];
+	ZeroMemory(szU8, u8Len + 1);
+	::WideCharToMultiByte(code, NULL, v.c_str(), -1, szU8, u8Len, NULL, NULL);
+
+	string stra = szU8;
+	delete[] szU8;
+	return stra;
+}
+
 wstring Utils::from_utf8(const string& a)
 {
 	UINT code = CP_UTF8;

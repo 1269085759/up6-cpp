@@ -17,4 +17,4 @@ public:
 	boost::unordered_map<long , MsgDataPtr> m_items;
 	boost::mutex m_items_mt;
 };
-typedef singleton_default<MsgCenter> MsgCenterIns;
+typedef boost::serialization::singleton<MsgCenter> MsgCenterIns;

@@ -11,7 +11,7 @@ MsgCenter::~MsgCenter()
 
 MsgCenter& MsgCenter::get()
 {
-	return MsgCenterIns::instance();
+	return MsgCenterIns::get_mutable_instance();
 }
 
 MsgDataPtr MsgCenter::make_msg( boost::any d )

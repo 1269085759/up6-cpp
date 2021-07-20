@@ -1,9 +1,13 @@
 #include "stdafx.h"
 #include "Up6Impl.h"
+#include "resource.h"
+#include "MainDlg.h"
 
-Up6Impl::Up6Impl()
+Up6Impl::Up6Impl(CMainDlg* dlg)
 {
 	this->m_inited = false;
+	this->data.tm = &ThreadMessage::get();
+	this->data.dlg = dlg;
 }
 
 Up6Impl::~Up6Impl()
@@ -13,12 +17,12 @@ Up6Impl::~Up6Impl()
 
 STDMETHODIMP Up6Impl::recvMessage(BSTR msg)
 {
-	auto js = Encoder::to_utf8(msg);
+	auto js = Utils::to_utf8(msg);
 	Json::Reader reader;
 	Json::Value root;
 	if (reader.parse(js, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素
 	{
-		auto n= root["name"].asString();
+		auto n = root["name"].asString();
 		if (n == "open_files") this->ent_open_files(root);
 		else if (n == "open_folders") this->ent_open_folders(root);
 		else if (n == "paste_files") this->ent_open_files(root);
@@ -39,7 +43,7 @@ STDMETHODIMP Up6Impl::recvMessage(BSTR msg)
 	return S_OK;
 }
 
-void Up6Impl::init(const wstring& cfgFile)
+void Up6Impl::init(Json::Value& cfg)
 {
 	CLSID clsid;
 	HRESULT hr = ::CLSIDFromProgID(L"Xproer.HttpPartition6.1", &clsid);
@@ -57,30 +61,19 @@ void Up6Impl::init(const wstring& cfgFile)
 		this->DispEventAdvise(up6Ptr);//挂事件
 	}
 
-	long len = 0;
-	auto data = Utils::ReadAll(cfgFile, len);
-	Json::Value cfg;
-	Json::Reader jr;
-	Utils::clearComment(data);
+	Json::Value o;
+	o["name"] = "init";
+	o["config"] = cfg;
+	Json::FastWriter writer;
+	auto str = writer.write(o);
+	auto json = Utils::from_utf8(str);
 
-	Utils::WriteAll(Utils::curDir() + L"config.1.js", data);
-
-	if (jr.parse(data.c_str(),cfg))
-	{
-		Json::Value o;
-		o["name"] = "init";
-		o["config"] = cfg;
-		Json::FastWriter writer;
-		auto str = writer.write(o);
-		auto json = Utils::from_utf8(str);
-
-		CComVariant v1(json.c_str());
-		CComVariant ret;
-		HRESULT hr = this->up6Cmp.Invoke1(
-			L"postMessage",
-			&v1,
-			&ret);
-	}
+	CComVariant v1(json.c_str());
+	CComVariant ret;
+	hr = this->up6Cmp.Invoke1(
+		L"postMessage",
+		&v1,
+		&ret);
 }
 
 void Up6Impl::getVersion()
@@ -169,7 +162,7 @@ void Up6Impl::ent_open_files(Json::Value& val)
 		auto f = val["files"][i];
 		std::string nameLoc = f.get("nameLoc", "").asString();
 		std::string pathLoc = f.get("pathLoc", "").asString();
-		this->entSelFile(nameLoc, pathLoc);
+		this->entSelFile(f);
 	}
 }
 
@@ -188,7 +181,7 @@ void Up6Impl::ent_open_folders(Json::Value& val)
 	}
 }
 
-void Up6Impl::ent_post_process(Json::Value& val)
+void Up6Impl::ent_post_process(Json::Value val)
 {
 	std::string id = val["id"].asString();
 	std::string lenSvr = val["lenSvr"].asString();
@@ -197,70 +190,77 @@ void Up6Impl::ent_post_process(Json::Value& val)
 	std::string lenPost = val["lenPost"].asString();
 	std::string speed = val["speed"].asString();
 	std::string time = val["time"].asString();
-	this->entPostProcess(val);
+	//this->entPostProcess(val);
+	this->data.tm->postAuto("post_process", val);
 }
 
-void Up6Impl::ent_post_error(Json::Value& val)
+void Up6Impl::ent_post_error(Json::Value val)
 {
 	std::string id = val["id"].asString();
 	std::string errCode = val["value"].asString();
-	this->entPostError(val);
+	//this->entPostError(val);
+	this->data.tm->postAuto("post_error", val);
 }
 
-void Up6Impl::ent_post_complete(Json::Value& val)
+void Up6Impl::ent_post_complete(Json::Value val)
 {
 	std::string id = val["id"].asString();
-	this->entPostComplete(val);
+	//this->entPostComplete(val);
+	this->data.tm->postAuto("post_complete", val);
+
 }
 
-void Up6Impl::ent_post_stoped(Json::Value& val)
+void Up6Impl::ent_post_stoped(Json::Value val)
 {
 	std::string id = val["id"].asString();
-	this->entPostStoped(val);
+	//this->entPostStoped(val);
+	this->data.tm->postAuto("post_stoped", val);
 }
 
-void Up6Impl::ent_scan_process(Json::Value& val)
+void Up6Impl::ent_scan_process(Json::Value val)
 {
 	std::string id = val["id"].asString();
-	this->entScanProcess(val);
+	//this->entScanProcess(val);
+	this->data.tm->postAuto("scan_process", val);
 }
 
-void Up6Impl::ent_scan_complete(Json::Value& val)
+void Up6Impl::ent_scan_complete(Json::Value val)
 {
 	std::string id = val["id"].asString();
-	this->entScanComplete(val);
+	//this->entScanComplete(val);
+	this->data.tm->postAuto("scan_complete", val);
 }
 
-void Up6Impl::ent_update_folder_complete(Json::Value& val)
+void Up6Impl::ent_update_folder_complete(Json::Value val)
 {
 	std::string id = val["id"].asString();
 	this->entUpdateFolderComplete(val);
 }
 
-void Up6Impl::ent_md5_process(Json::Value& val)
+void Up6Impl::ent_md5_process(Json::Value val)
 {
-	std::string id = val["id"].asString();
-	this->entMd5Process(val);
+	this->data.tm->postAuto("md5_process", val);
 }
 
-void Up6Impl::ent_md5_complete(Json::Value& val)
+void Up6Impl::ent_md5_complete(Json::Value val)
 {
-	std::string id = val["id"].asString();
-	this->entMd5Complete(val);
+	auto id = val.get("id","").asString();
+	this->data.tm->postAuto("md5_complete", val);
 }
 
-void Up6Impl::ent_md5_error(Json::Value& val)
+void Up6Impl::ent_md5_error(Json::Value val)
 {
-	std::string id = val["id"].asString();
-	this->entMd5Error(val);
+	/*std::string id = val["id"].asString();
+	this->entMd5Error(val);*/
+	this->data.tm->postAuto("md5_error", val);
 }
 
-void Up6Impl::ent_add_folder_error(Json::Value& val)
+void Up6Impl::ent_add_folder_error(Json::Value val)
 {
 	this->entAddFolderErr(val);
 }
 
-void Up6Impl::ent_load_complete(Json::Value& val)
+void Up6Impl::ent_load_complete(Json::Value val)
 {
-	this->entLoadComplete(val);
+	this->data.dlg->addMsg(L"控件加载成功");
 }

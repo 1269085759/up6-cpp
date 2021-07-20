@@ -9,6 +9,7 @@ public:
 
 	static ThreadMessage& get();
 
+	void init(const map<string,boost::function<void(long)>>& es);
 	/*
 	 Method:    post 
 	 Access:    public 
@@ -30,4 +31,4 @@ public:
 	boost::unordered_multimap<string , boost::function<void(long)>> m_handler;
 	MsgCenter* m_mc;
 };
-typedef singleton_default<ThreadMessage> ThreadMsg;
+typedef boost::serialization::singleton<ThreadMessage> ThreadMsg;
