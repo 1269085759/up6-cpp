@@ -1,6 +1,6 @@
 #pragma once
 #pragma warning (disable : 4146)
-#import "F:\xproeratl\up6\code\x86\atl\obj\Debug\HttpUploaderApp.tlb" named_guids, raw_interfaces_only
+#import "HttpUploaderApp.tlb" named_guids, raw_interfaces_only
 //#import "Xproer.HttpPartition6.1" no_namespace, raw_interfaces_only
 
 //#include "HttpUploaderApp_p.c"
