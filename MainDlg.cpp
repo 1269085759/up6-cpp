@@ -107,17 +107,6 @@ void CMainDlg::up6_component_init()
 	this->m_up6 = std::make_shared<Up6Impl>(this);
 	this->m_up6->entSelFile.connect(boost::bind(&CMainDlg::up6_sel_files, this, _1));
 	this->m_up6->entSelFolder.connect(boost::bind(&CMainDlg::up6_sel_folder, this, _1));
-	/*this->m_up6->entPostProcess.connect(boost::bind(&CMainDlg::up6_post_process, this, _1));
-	this->m_up6->entPostError.connect(boost::bind(&CMainDlg::up6_post_error, this, _1));
-	this->m_up6->entPostComplete.connect(boost::bind(&CMainDlg::up6_post_complete, this, _1));
-	this->m_up6->entPostStoped.connect(boost::bind(&CMainDlg::up6_post_stoped, this, _1));
-	this->m_up6->entScanProcess.connect(boost::bind(&CMainDlg::up6_scan_process, this, _1));
-	this->m_up6->entScanComplete.connect(boost::bind(&CMainDlg::up6_scan_complete, this, _1));
-	this->m_up6->entUpdateFolderComplete.connect(boost::bind(&CMainDlg::up6_update_fd_complete, this, _1));
-	this->m_up6->entMd5Process.connect(boost::bind(&CMainDlg::up6_md5_process, this, _1));
-	this->m_up6->entMd5Complete.connect(boost::bind(&CMainDlg::up6_md5_complete, this, _1));
-	this->m_up6->entMd5Error.connect(boost::bind(&CMainDlg::up6_md5_error, this, _1));
-	this->m_up6->entLoadComplete.connect(boost::bind(&CMainDlg::up6_load_complete, this, _1));*/
 	
 	//
 	auto dir = Utils::curDir();

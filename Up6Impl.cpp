@@ -190,44 +190,31 @@ void Up6Impl::ent_post_process(Json::Value val)
 	std::string lenPost = val["lenPost"].asString();
 	std::string speed = val["speed"].asString();
 	std::string time = val["time"].asString();
-	//this->entPostProcess(val);
 	this->data.tm->postAuto("post_process", val);
 }
 
 void Up6Impl::ent_post_error(Json::Value val)
 {
-	std::string id = val["id"].asString();
-	std::string errCode = val["value"].asString();
-	//this->entPostError(val);
 	this->data.tm->postAuto("post_error", val);
 }
 
 void Up6Impl::ent_post_complete(Json::Value val)
 {
-	std::string id = val["id"].asString();
-	//this->entPostComplete(val);
 	this->data.tm->postAuto("post_complete", val);
-
 }
 
 void Up6Impl::ent_post_stoped(Json::Value val)
 {
-	std::string id = val["id"].asString();
-	//this->entPostStoped(val);
 	this->data.tm->postAuto("post_stoped", val);
 }
 
 void Up6Impl::ent_scan_process(Json::Value val)
 {
-	std::string id = val["id"].asString();
-	//this->entScanProcess(val);
 	this->data.tm->postAuto("scan_process", val);
 }
 
 void Up6Impl::ent_scan_complete(Json::Value val)
 {
-	std::string id = val["id"].asString();
-	//this->entScanComplete(val);
 	this->data.tm->postAuto("scan_complete", val);
 }
 
@@ -244,14 +231,11 @@ void Up6Impl::ent_md5_process(Json::Value val)
 
 void Up6Impl::ent_md5_complete(Json::Value val)
 {
-	auto id = val.get("id","").asString();
 	this->data.tm->postAuto("md5_complete", val);
 }
 
 void Up6Impl::ent_md5_error(Json::Value val)
 {
-	/*std::string id = val["id"].asString();
-	this->entMd5Error(val);*/
 	this->data.tm->postAuto("md5_error", val);
 }
 

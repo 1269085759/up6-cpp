@@ -36,18 +36,8 @@ public:
 
 	boost::signals2::signal<void(Json::Value&)> entSelFile;
 	boost::signals2::signal<void(Json::Value&)> entSelFolder;
-	//boost::signals2::signal<void(Json::Value&)> entPostProcess;
-	//boost::signals2::signal<void(Json::Value&)> entPostError;
-	//boost::signals2::signal<void(Json::Value&)> entPostComplete;
-	//boost::signals2::signal<void(Json::Value&)> entPostStoped;
-	//boost::signals2::signal<void(Json::Value&)> entScanProcess;
-	//boost::signals2::signal<void(Json::Value&)> entScanComplete;
 	boost::signals2::signal<void(Json::Value&)> entUpdateFolderComplete;
-	//boost::signals2::signal<void(Json::Value&)> entMd5Process;
-	//boost::signals2::signal<void(Json::Value&)> entMd5Complete;
-	//boost::signals2::signal<void(Json::Value&)> entMd5Error;
 	boost::signals2::signal<void(Json::Value&)> entAddFolderErr;
-	//boost::signals2::signal<void(Json::Value&)> entLoadComplete;
 
 public:
 	//api
