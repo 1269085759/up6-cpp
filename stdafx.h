@@ -64,6 +64,12 @@ using namespace boost::signals2;
 #include "components/MsgCenter.h"
 #include "components/MsgData.h"
 #include "components/ThreadMessage.h"
+#include <curl/curl.h>
 #include "link-json.h"
-#include "link-core.h"
+#include "link-libcurl.h"
+#include "link-openssl.h"
 #include "link-crypt.h"
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "wldap32.lib")
+#pragma comment(lib, "Crypt32.lib")

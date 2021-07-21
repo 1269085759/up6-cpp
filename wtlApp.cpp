@@ -24,7 +24,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR /*
 
 	hRes = _Module.Init(NULL, hInstance);
 	ATLASSERT(SUCCEEDED(hRes));
-
+	curl_global_init(CURL_GLOBAL_ALL);//全局初始化
 	int nRet = 0;
 	// BLOCK: Run application
 	{
@@ -34,6 +34,6 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR /*
 
 	_Module.Term();
 	::CoUninitialize();
-
+	curl_global_cleanup();//卸载
 	return nRet;
 }
