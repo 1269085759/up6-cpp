@@ -89,6 +89,39 @@ wstring Utils::from_utf8(const string& a)
 	return w;
 }
 
+string Utils::url_decode(const string& src)
+{
+	std::string dst, dsturl;
+
+	int srclen = src.size();
+
+	for (size_t i = 0; i < srclen; i++)
+	{
+		if (src[i] == '%')
+		{
+			if (isxdigit(src[i + 1]) && isxdigit(src[i + 2]))
+			{
+				char c1 = src[++i];
+				char c2 = src[++i];
+				c1 = c1 - 48 - ((c1 >= 'A') ? 7 : 0) - ((c1 >= 'a') ? 32 : 0);
+				c2 = c2 - 48 - ((c2 >= 'A') ? 7 : 0) - ((c2 >= 'a') ? 32 : 0);
+				dst += (unsigned char)(c1 * 16 + c2);
+			}
+		}
+		else
+			if (src[i] == '+')
+			{
+				dst += ' ';
+			}
+			else
+			{
+				dst += src[i];
+			}
+	}
+
+	return dst;
+}
+
 /*
  Method:    µ±Ç°Ä¿Â¼
  D:\\Soft\\
@@ -156,4 +189,17 @@ void Utils::clearComment(string& v)
 	{
 		v.erase(t.first, t.second - t.first);
 	}
+}
+
+bool Utils::parse(const string& v, Json::Value& json)
+{
+	try
+	{
+		Json::Reader reader;
+		return reader.parse(v, json);
+	}
+	catch (std::exception& e)
+	{
+	}
+	return false;
 }

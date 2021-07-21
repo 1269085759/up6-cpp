@@ -11,6 +11,7 @@ class FileUploader
 		FileData fileSvr;
 		Up6Impl* up6;
 		CMainDlg* dlg;
+		ThreadMessage* tm;
 		Json::Value cfg;
 	}DataDef;
 public:
@@ -19,6 +20,7 @@ public:
 
 	void check_file();
 	void init_file();
+	void init_file_complete();
 	void init_file_error();
 	void post_file();
 	void md5_process(Json::Value v);

@@ -148,6 +148,7 @@ void CMainDlg::up6_sel_files(Json::Value& v)
 	this->m_edtMsg.AppendText(L"\r\n");
 
 	auto up = std::make_shared<FileUploader>(this->m_up6.get(), this);
+	up->data.tm = this->data.tm;
 	up->data.cfg = this->data.cfg;
 	up->data.fileSvr.id = id;
 	up->data.fileSvr.nameLoc = nameLoc;
