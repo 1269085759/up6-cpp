@@ -184,38 +184,47 @@ void Up6Impl::ent_open_folders(Json::Value& val)
 void Up6Impl::ent_post_process(Json::Value val)
 {
 	std::string id = val["id"].asString();
-	std::string lenSvr = val["lenSvr"].asString();
-	std::string perSvr = val["perSvr"].asString();
-	std::string percent = val["percent"].asString();
-	std::string lenPost = val["lenPost"].asString();
-	std::string speed = val["speed"].asString();
-	std::string time = val["time"].asString();
-	this->data.tm->postAuto("post_process", val);
+	auto f = this->data.dlg->getUper(id);
+	if(f) f->post_process(val);
 }
 
 void Up6Impl::ent_post_error(Json::Value val)
 {
-	this->data.tm->postAuto("post_error", val);
+	std::string id = val["id"].asString();
+	auto f = this->data.dlg->getUper(id);
+	if (f) f->post_error(val);
+
+	//this->data.tm->postAuto("post_error", val);
 }
 
 void Up6Impl::ent_post_complete(Json::Value val)
 {
-	this->data.tm->postAuto("post_complete", val);
+	std::string id = val["id"].asString();
+	auto f = this->data.dlg->getUper(id);
+	if (f) f->post_complete(val);
+
+	//this->data.tm->postAuto("post_complete", val);
 }
 
 void Up6Impl::ent_post_stoped(Json::Value val)
 {
-	this->data.tm->postAuto("post_stoped", val);
+	std::string id = val["id"].asString();
+	auto f = this->data.dlg->getUper(id);
+	if (f) f->post_stoped(val);
 }
 
 void Up6Impl::ent_scan_process(Json::Value val)
 {
-	this->data.tm->postAuto("scan_process", val);
+	std::string id = val["id"].asString();
+	auto f = this->data.dlg->getUper(id);
+	if (f) f->scan_process(val);
 }
 
 void Up6Impl::ent_scan_complete(Json::Value val)
 {
-	this->data.tm->postAuto("scan_complete", val);
+	std::string id = val["id"].asString();
+	auto f = this->data.dlg->getUper(id);
+	if (f) f->scan_complete(val);
 }
 
 void Up6Impl::ent_update_folder_complete(Json::Value val)
@@ -226,17 +235,23 @@ void Up6Impl::ent_update_folder_complete(Json::Value val)
 
 void Up6Impl::ent_md5_process(Json::Value val)
 {
-	this->data.tm->postAuto("md5_process", val);
+	std::string id = val["id"].asString();
+	auto f = this->data.dlg->getUper(id);
+	if (f) f->md5_process(val);
 }
 
 void Up6Impl::ent_md5_complete(Json::Value val)
 {
-	this->data.tm->postAuto("md5_complete", val);
+	std::string id = val["id"].asString();
+	auto f = this->data.dlg->getUper(id);
+	if (f) f->md5_complete(val);
 }
 
 void Up6Impl::ent_md5_error(Json::Value val)
 {
-	this->data.tm->postAuto("md5_error", val);
+	std::string id = val["id"].asString();
+	auto f = this->data.dlg->getUper(id);
+	if (f) f->md5_error(val);
 }
 
 void Up6Impl::ent_add_folder_error(Json::Value val)

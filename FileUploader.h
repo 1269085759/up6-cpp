@@ -12,6 +12,7 @@ class FileUploader
 		Up6Impl* up6;
 		CMainDlg* dlg;
 		ThreadMessage* tm;
+		MsgCenter* mc;
 		Json::Value cfg;
 	}DataDef;
 public:
@@ -29,6 +30,7 @@ public:
 	void post_process(Json::Value v);
 	void post_complete(Json::Value v);
 	void post_error(Json::Value v);
+	void post_stoped(Json::Value v);
 	void scan_process(Json::Value v);
 	void scan_complete(Json::Value v);
 

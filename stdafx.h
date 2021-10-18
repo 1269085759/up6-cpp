@@ -58,13 +58,15 @@ using namespace boost::signals2;
 #define BIZ_MESSAGE (WM_USER + 100)
 
 #include "json/json.h"
+#include <curl/curl.h>
 #include "Utils.h"
 #include "Up6Impl.h"
 #include "FileData.h"
 #include "components/MsgCenter.h"
 #include "components/MsgData.h"
 #include "components/ThreadMessage.h"
-#include <curl/curl.h>
+#include "FileUploader.h"
+
 #include "link-json.h"
 #include "link-libcurl.h"
 #include "link-openssl.h"

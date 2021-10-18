@@ -33,6 +33,8 @@ LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 		("md5_process", boost::bind(&CMainDlg::up6_md5_process, this, _1))
 		("md5_complete", boost::bind(&CMainDlg::up6_md5_complete, this, _1))
 		("md5_error", boost::bind(&CMainDlg::up6_md5_error, this, _1))
+		("init_file_cmp", boost::bind(&CMainDlg::up6_init_file_cmp, this, _1))
+		("init_file_err", boost::bind(&CMainDlg::up6_init_file_err, this, _1))
 		("post_process", boost::bind(&CMainDlg::up6_post_process, this, _1))
 		("post_error", boost::bind(&CMainDlg::up6_post_error, this, _1))
 		("post_complete", boost::bind(&CMainDlg::up6_post_complete, this, _1))
@@ -132,6 +134,25 @@ void CMainDlg::addMsg(const wstring& v)
 	this->m_edtMsg.AppendText(L"\r\n");
 }
 
+/*
+ Method:    获取上传对象
+ FullName:  CMainDlg::getFile
+ Access:    public 
+ Returns:   std::shared_ptr<FileUploader>
+ Qualifier:
+ Parameter: string v
+*/
+std::shared_ptr<FileUploader> CMainDlg::getUper(string id)
+{
+	std::shared_ptr<FileUploader> u;
+	auto ret = this->data.files.find(id);
+	if (this->data.files.end() != ret)
+	{
+		u = ret->second;
+	}
+	return u;
+}
+
 void CMainDlg::up6_sel_files(Json::Value& v)
 {
 	auto id = v.get("id", "").asString();
@@ -149,6 +170,7 @@ void CMainDlg::up6_sel_files(Json::Value& v)
 
 	auto up = std::make_shared<FileUploader>(this->m_up6.get(), this);
 	up->data.tm = this->data.tm;
+	up->data.mc = this->data.mc;
 	up->data.cfg = this->data.cfg;
 	up->data.fileSvr.id = id;
 	up->data.fileSvr.nameLoc = nameLoc;
@@ -178,32 +200,72 @@ void CMainDlg::up6_sel_folder(Json::Value& v)
 
 void CMainDlg::up6_post_process(long v)
 {
-
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d);
+	auto f = this->getUper(id);
+	auto idw = Utils::from_utf8(id);
+	auto lenw = Utils::from_utf8(f->data.fileSvr.lenPost);
+	auto spedw = Utils::from_utf8(f->data.fileSvr.speed);
+	auto timew = Utils::from_utf8(f->data.fileSvr.time);
+	boost::wformat fmt(L"正在上传文件，speed:%1%,postLen:%2%,time:%3% id:%4%");
+	fmt % spedw % lenw % timew % idw;
+	this->addMsg(fmt.str());
 }
 
 void CMainDlg::up6_post_error(long v)
 {
-
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d);
+	auto f = this->getUper(id);
+	auto idw = Utils::from_utf8(id);
+	boost::wformat fmt(L"上传错误，id:%1%");
+	fmt % idw;
+	this->addMsg(fmt.str());
 }
 
 void CMainDlg::up6_post_complete(long v)
 {
-
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d);
+	auto f = this->getUper(id);
+	auto idw = Utils::from_utf8(id);
+	boost::wformat fmt(L"上传完毕，id:%1%");
+	fmt % idw;
+	this->addMsg(fmt.str());
 }
 
 void CMainDlg::up6_post_stoped(long v)
 {
-
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d);
+	auto f = this->getUper(id);
+	auto idw = Utils::from_utf8(id);
+	boost::wformat fmt(L"上传停止，id:%1%");
+	fmt % idw;
+	this->addMsg(fmt.str());
 }
 
 void CMainDlg::up6_scan_process(long v)
 {
-
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d);
+	auto f = this->getUper(id);
+	auto idw = Utils::from_utf8(id);
+	auto perw = Utils::from_utf8(f->data.fileSvr.percent);
+	boost::wformat fmt(L"扫描中......%1%，id:%2%");
+	fmt % perw % idw;
+	this->addMsg(fmt.str());
 }
 
 void CMainDlg::up6_scan_complete(long v)
 {
-	this->addMsg(L"目录扫描完毕");
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d);
+	auto f = this->getUper(id);
+	auto idw = Utils::from_utf8(id);
+	boost::wformat fmt(L"扫描完毕......，id:%2%");
+	fmt % idw;
+	this->addMsg(fmt.str());
 }
 
 void CMainDlg::up6_update_fd_complete(long v)
@@ -214,30 +276,54 @@ void CMainDlg::up6_update_fd_complete(long v)
 void CMainDlg::up6_md5_process(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto jv = boost::any_cast<Json::Value>(d->m_data);
-	auto id = jv.get("id", "").asString();
-	auto f = this->data.files.find(id);
-	if (f != this->data.files.end())
-	{
-		f->second->md5_process(jv);
-	}
+	auto id = boost::any_cast<string>(d);
+	auto f = this->getUper(id);
+	auto idw = Utils::from_utf8(id);
+	auto perw = Utils::from_utf8(f->data.fileSvr.percent);
+	boost::wformat fmt(L"正在计算文件MD5，进度：%1% id:%2%");
+	fmt % perw % idw;
+	this->addMsg(fmt.str());
 }
 
 void CMainDlg::up6_md5_complete(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto jv = boost::any_cast<Json::Value>(d->m_data);
-	auto id = jv.get("id", "").asString();
-	auto f = this->data.files.find(id);
-	if (f != this->data.files.end())
-	{
-		f->second->md5_complete(jv);
-	}
+	auto id = boost::any_cast<string>(d);
+	auto idw = Utils::from_utf8(id);
+	auto f = this->getUper(id);
+	boost::wformat fmt(L"md5计算完毕,开始初始化文件，id:%1%");
+	fmt % idw;
+	this->addMsg(fmt.str());
 }
 
 void CMainDlg::up6_md5_error(long v)
 {
-	this->addMsg(L"md5错误");
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d);
+	auto idw = Utils::from_utf8(id);
+	boost::wformat fmt(L"md5计算错误，id:%1%");
+	fmt % idw;
+	this->addMsg(fmt.str());
+}
+
+void CMainDlg::up6_init_file_cmp(long v)
+{
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d);
+	auto idw = Utils::from_utf8(id);
+	boost::wformat fmt(L"文件初始化完毕，id:%1%");
+	fmt % idw;
+	this->addMsg(fmt.str());
+}
+
+void CMainDlg::up6_init_file_err(long v)
+{
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d);
+	auto idw = Utils::from_utf8(id);
+	boost::wformat fmt(L"文件初始化错误，id:%1%");
+	fmt % idw;
+	this->addMsg(fmt.str());
 }
 
 void CMainDlg::up6_add_folder_err(long v)

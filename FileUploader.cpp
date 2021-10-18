@@ -22,15 +22,6 @@ void FileUploader::check_file()
 	this->data.up6->postMessage(v);
 }
 
-size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
-{
-	string data((const char*)ptr, (size_t)size * nmemb);
-
-	*((stringstream*)stream) << data;
-
-	return size * nmemb;
-}
-
 /*
  Method:    文件初始化
  FullName:  FileUploader::init_file
@@ -40,69 +31,39 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 */
 void FileUploader::init_file()
 {
-	this->data.dlg->addMsg(L"开始初始化文件");
-	boost::thread td([this]() {
-		std::stringstream response;
-		CURL *curl = curl_easy_init();
-		if (curl) {
-			curl_easy_setopt(curl, CURLOPT_URL, this->data.cfg.get("UrlCreate", "").asString().c_str());
-			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-			curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-			curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-
-			curl_slist *header = NULL;
-			string md5 = "md5:" + this->data.fileSvr.md5;
-			string id = "id:" + this->data.fileSvr.id;
-			string uid = "uid:" + std::to_string(this->data.fileSvr.uid);
-			string lenLoc = "lenLoc:" + std::to_string(this->data.fileSvr.lenLoc);
-			string sizeLoc = "sizeLoc:" + this->data.fileSvr.sizeLoc;
-			string pathLoc = "pathLoc:" + this->data.fileSvr.pathLoc;
-			header = curl_slist_append(header, md5.c_str());
-			header = curl_slist_append(header, id.c_str());
-			header = curl_slist_append(header, uid.c_str());
-			header = curl_slist_append(header, lenLoc.c_str());
-			header = curl_slist_append(header, sizeLoc.c_str());
-			header = curl_slist_append(header, pathLoc.c_str());
-			curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header);
-
-			/* Perform the request, res will get the return code */
-			CURLcode res = curl_easy_perform(curl);
-			int httpstate = 0;
-			curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpstate);
-			/* Check for errors */
-			if (res != CURLE_OK|| 200 != httpstate)
-			{
-				this->init_file_error();
-			}
-			else
-			{
-				auto res = response.str();
-				res = Utils::url_decode(res);
-				Json::Value json;
-				if (Utils::parse(res, json))
-				{
-					this->data.fileSvr.pathSvr = json.get("pathSvr", "").asString();
-					this->post_file();
-				}
-			}
-
-			/* always cleanup */
-			curl_slist_free_all(header);//
-			curl_easy_cleanup(curl);
+	//this->data.dlg->addMsg(L"开始初始化文件");
+	map<string, string> header = {
+		{"md5",this->data.fileSvr.md5},
+		{"id",this->data.fileSvr.id},
+		{"uid", std::to_string( this->data.fileSvr.uid) },
+		{"lenLoc",std::to_string( this->data.fileSvr.lenLoc) },
+		{"sizeLoc",this->data.fileSvr.sizeLoc},
+		{"pathLoc",this->data.fileSvr.pathLoc},
+	};
+	
+	boost::thread td([this,&header]() {
+		string response;
+		if (Utils::http_get(this->data.cfg.get("UrlCreate", "").asString(), header, response))
+		{
+			this->init_file_complete();
+		}
+		else
+		{
+			this->init_file_error();
 		}
 	});
 }
 
 void FileUploader::init_file_complete()
 {
-	this->data.dlg->addMsg(L"文件初始化成功");
+	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
+	this->data.tm->post("init_file_cmp", d->getID() );
 }
 
 void FileUploader::init_file_error()
 {
-	this->data.dlg->addMsg(L"文件初始化失败");
+	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
+	this->data.tm->post("init_file_err", d->getID() );
 }
 
 void FileUploader::post_file()
@@ -121,46 +82,79 @@ void FileUploader::post_file()
 
 void FileUploader::md5_process(Json::Value v)
 {
-	this->data.dlg->addMsg(L"md5计算中...");
+	this->data.fileSvr.percent = v["percent"].asString();
+	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
+	this->data.tm->post("md5_process", d->getID());
 }
 
 void FileUploader::md5_complete(Json::Value v)
 {
 	this->data.fileSvr.md5 = v.get("md5","").asString();
-	this->data.dlg->addMsg(L"md5计算完毕");
-	boost::format fmt("md5:%1%");
+	//this->data.dlg->addMsg(L"md5计算完毕");
+	/*boost::format fmt("md5:%1%");
 	fmt % this->data.fileSvr.md5;
-	this->data.dlg->addMsg(Utils::from_utf8(fmt.str()));
+	this->data.dlg->addMsg(Utils::from_utf8(fmt.str()));*/
+
+
+	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
+	this->data.tm->post("md5_complete", d->getID());
 
 	this->init_file();
 }
 
 void FileUploader::md5_error(Json::Value v)
 {
-
+	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
+	this->data.tm->post("md5_error", d->getID());
 }
 
+/*
+ Method:    post_process
+ FullName:  FileUploader::post_process
+ Access:    public 
+ Returns:   void
+ Qualifier:
+ Parameter: Json::Value v
+*/
 void FileUploader::post_process(Json::Value v)
 {
+	this->data.fileSvr.lenSvr = v["lenSvr"].asInt64();
+	this->data.fileSvr.perSvr = v["perSvr"].asString();//已传百分比
+	this->data.fileSvr.percent = v["percent"].asString();//已发送百分比
+	this->data.fileSvr.lenPost = v["lenPost"].asString();//已发送大小
+	this->data.fileSvr.speed = v["speed"].asString();//速度
+	this->data.fileSvr.time = v["time"].asString();	//剩余时间
 
+	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
+	this->data.tm->post("post_process", d->getID());
 }
 
 void FileUploader::post_complete(Json::Value v)
 {
-
+	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
+	this->data.tm->post("post_complete", d->getID());
 }
 
 void FileUploader::post_error(Json::Value v)
 {
+	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
+	this->data.tm->post("post_error", d->getID());
+}
 
+void FileUploader::post_stoped(Json::Value v)
+{
+	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
+	this->data.tm->post("post_stoped", d->getID());
 }
 
 void FileUploader::scan_process(Json::Value v)
 {
-
+	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
+	this->data.tm->post("scan_process", d->getID());
 }
 
 void FileUploader::scan_complete(Json::Value v)
 {
-
+	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
+	this->data.tm->post("scan_complete", d->getID());
 }

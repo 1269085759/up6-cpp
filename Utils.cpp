@@ -203,3 +203,66 @@ bool Utils::parse(const string& v, Json::Value& json)
 	}
 	return false;
 }
+
+size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
+{
+	string data((const char*)ptr, (size_t)size * nmemb);
+
+	*((stringstream*)stream) << data;
+
+	return size * nmemb;
+}
+
+/*
+ Method:    httpÇëÇó
+ FullName:  Utils::http_get
+ Access:    public static 
+ Returns:   bool
+ Qualifier:
+ Parameter: const string & url
+ Parameter: map<string
+ Parameter: string> & header
+*/
+bool Utils::http_get(const string& url, map<string,string>& hd, string& svr_res)
+{
+	bool hr = false;
+	std::stringstream response;
+	CURL *curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+		curl_slist *header = NULL;
+		for (auto& h : hd)
+		{
+			string v = h.first + ":" + h.second;
+			header = curl_slist_append(header, v.c_str());
+		}
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header);
+
+		/* Perform the request, res will get the return code */
+		CURLcode res = curl_easy_perform(curl);
+		int httpstate = 0;
+		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpstate);
+		/* Check for errors */
+		if (res != CURLE_OK || 200 != httpstate)
+		{
+		}
+		else
+		{
+			svr_res = response.str();
+			svr_res = Utils::url_decode(svr_res);
+			Json::Value json;
+			hr = Utils::parse(svr_res, json);
+		}
+
+		/* always cleanup */
+		curl_slist_free_all(header);//
+		curl_easy_cleanup(curl);
+	}
+	return hr;
+}

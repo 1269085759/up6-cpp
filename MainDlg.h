@@ -45,6 +45,7 @@ public:
 
 	void up6_component_init();
 	void addMsg(const wstring& v);
+	std::shared_ptr<FileUploader> getUper(string id);
 
 	//event
 	void up6_sel_files(Json::Value& v);
@@ -59,6 +60,8 @@ public:
 	void up6_md5_process(long v);
 	void up6_md5_complete(long v);
 	void up6_md5_error(long v);
+	void up6_init_file_cmp(long v);
+	void up6_init_file_err(long v);
 	void up6_add_folder_err(long v);
 	void up6_load_complete(long v);
 

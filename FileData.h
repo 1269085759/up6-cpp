@@ -26,6 +26,10 @@ public:
 	__int64 lenSvr;
 	string sizeLoc;
 	string perSvr;
+	string time;//剩余时间
+	string speed;//速度
+	string lenPost;//已传大小
+	string percent;//md5进度(已传进度)
 	bool complete;
 	bool deleted;
 };
