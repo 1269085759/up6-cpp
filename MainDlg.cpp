@@ -125,6 +125,8 @@ void CMainDlg::up6_component_init()
 	else
 	{
 		this->addMsg(L"³õÊ¼»¯Ê§°Ü");
+		auto dw = Utils::from_utf8(data);
+		this->addMsg(dw);
 	}
 }
 

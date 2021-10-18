@@ -43,6 +43,7 @@ using namespace std;
 typedef std::shared_ptr<map<string, string>> mapStrPtr;
 
 #include <boost/serialization/singleton.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/signals2/signal.hpp>
 #include <boost/assign.hpp>
 #include <boost/function.hpp>

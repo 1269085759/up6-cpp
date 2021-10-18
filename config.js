@@ -26,52 +26,21 @@
         , "FdSizeLimit"     : 0//文件夹大小限制。0表示不限制
         , "FdChildLimit"    : 0//文件夹子元素数量限制（子文件+子文件夹）。0表示不限制
         , "ProcSaveTm"      : 60//定时保存进度。单位：秒，默认：1分钟
-        , "AutoConnect"     : {opened:false,time:3000}//启动错误自动重传
-		//文件夹操作相关
+        , "AutoConnect"     : {
+        "opened": false, "time":3000}//启动错误自动重传
 		, "UrlFdCreate"		: "http://localhost:8888/db/fd_create.aspx"
 		, "UrlFdComplete"	: "http://localhost:8888/db/fd_complete.aspx"
 		, "UrlFdDel"	    : "http://localhost:8888/db/fd_del.aspx"
-		//文件操作相关
 		, "UrlCreate"		: "http://localhost:8888/db/f_create.aspx"
 		, "UrlPost"			: "http://localhost:8888/db/f_post.aspx"
         , "UrlProcess"		: "http://localhost:8888/db/f_process.aspx"
 		, "UrlComplete"		: "http://localhost:8888/db/f_complete.aspx"
 		, "UrlList"			: "http://localhost:8888/db/f_list.aspx"
 		, "UrlDel"			: "http://localhost:8888/db/f_del.aspx"
-	    //x86
-        , ie: {
-              drop: { clsid: "0868BADD-C17E-4819-81DE-1D60E5E734A6", name: "Xproer.HttpDroper6" }
-            , part: { clsid: "BA0B719E-F4B7-464b-A664-6FC02126B652", name: "Xproer.HttpPartition6" }
-            , path: "http://res2.ncmem.com/download/up6/pack/6.5.22/up6.cab"
-        }
-	    //x64
-        , ie64: {
-              drop: { clsid: "7B9F1B50-A7B9-4665-A6D1-0406E643A856", name: "Xproer.HttpDroper6x64" }
-            , part: { clsid: "307DE0A1-5384-4CD0-8FA8-500F0FFEA388", name: "Xproer.HttpPartition6x64" }
-            , path: "http://res2.ncmem.com/download/up6/pack/6.5.22/up64.cab"
-        }
-        , firefox: { name: "", type: "application/npHttpUploader6", path: "http://res2.ncmem.com/download/up6/pack/6.5.22/up6.xpi" }
-        , chrome: { name: "npHttpUploader6", type: "application/npHttpUploader6", path: "http://res2.ncmem.com/download/up6/pack/6.5.22/up6.crx" }
-        , exe: { path: "http://res2.ncmem.com/download/up6/pack/6.5.22/up6.exe" }
-        , mac: { path: "http://res2.ncmem.com/download/up6/pack/6.5.22/up6.pkg" }
-        , linux: { path: "http://res2.ncmem.com/download/up6/pack/6.5.22/up6.tar" }
-        , edge: {protocol:"up6",port:9100,visible:false}
-		, "SetupPath": "http://localhost:4955/demoAccess/js/setup.htm"
+        , "edge": {
+        "protocol": "up6", "port": 9100, "visible":false}
         , "Fields": { "uname": "test", "upass": "test", "uid": "0" }
-        , ui: {
-            icon: {
-                upFile: "js/16/upload.png",
-                upFolder: "js/16/folder.png",
-                paste: "js/16/paste.png",
-                clear: "js/16/paste.png",
-                file: "js/file.png",
-                folder: "js/folder.png",
-                stop: "js/stop.png",
-                del: "js/del.png",
-                post: "js/post.png"
-            }
-        }
-        , errCode: {
+        , "errCode": {
             "0": "发送数据错误"
             , "1": "接收数据错误"
             , "2": "访问本地文件错误"
@@ -89,18 +58,5 @@
             , "14": "上传地址错误"
             , "15": "文件块MD5不匹配"
             , "100": "服务器错误"
-        }
-        , state: {
-            Ready: 0,
-            Posting: 1,
-            Stop: 2,
-            Error: 3,
-            GetNewID: 4,
-            Complete: 5,
-            WaitContinueUpload: 6,
-            None: 7,
-            Waiting: 8
-            , MD5Working: 9
-            , scan: 10
         }
 	}

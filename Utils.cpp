@@ -223,26 +223,27 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
  Parameter: map<string
  Parameter: string> & header
 */
-bool Utils::http_get(const string& url, mapStrPtr hd, string& svr_res)
+bool Utils::http_get(string url, mapStrPtr hd, string& svr_res)
 {
 	bool hr = false;
 	std::stringstream response;
 	CURL *curl = curl_easy_init();
 	if (curl) {
+
+		//拼接查询参数
+		list<string> qs;
+		for (auto& h : *hd)
+		{
+			qs.push_back( h.first + "=" + h.second);
+		}
+		url = url + "?" + boost::join(qs, "&");
+
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-
-		curl_slist *header = NULL;
-		for (auto& h : *hd)
-		{
-			string v = h.first + ":" + h.second;
-			header = curl_slist_append(header, v.c_str());
-		}
-		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header);
 
 		/* Perform the request, res will get the return code */
 		CURLcode res = curl_easy_perform(curl);
@@ -261,7 +262,6 @@ bool Utils::http_get(const string& url, mapStrPtr hd, string& svr_res)
 		}
 
 		/* always cleanup */
-		curl_slist_free_all(header);//
 		curl_easy_cleanup(curl);
 	}
 	return hr;

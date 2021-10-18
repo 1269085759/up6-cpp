@@ -17,5 +17,5 @@ public:
 	static wstring curDir();
 	static void clearComment(string& v);
 	static bool parse(const string& v,Json::Value& json);
-	static bool http_get(const string& url, mapStrPtr hd,string& svr_res);
+	static bool http_get(string url, mapStrPtr hd,string& svr_res);
 };
