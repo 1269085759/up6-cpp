@@ -201,7 +201,7 @@ void CMainDlg::up6_sel_folder(Json::Value& v)
 void CMainDlg::up6_post_process(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto id = boost::any_cast<string>(d);
+	auto id = boost::any_cast<string>(d->getData());
 	auto f = this->getUper(id);
 	auto idw = Utils::from_utf8(id);
 	auto lenw = Utils::from_utf8(f->data.fileSvr.lenPost);
@@ -215,7 +215,7 @@ void CMainDlg::up6_post_process(long v)
 void CMainDlg::up6_post_error(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto id = boost::any_cast<string>(d);
+	auto id = boost::any_cast<string>(d->getData());
 	auto f = this->getUper(id);
 	auto idw = Utils::from_utf8(id);
 	boost::wformat fmt(L"上传错误，id:%1%");
@@ -226,7 +226,7 @@ void CMainDlg::up6_post_error(long v)
 void CMainDlg::up6_post_complete(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto id = boost::any_cast<string>(d);
+	auto id = boost::any_cast<string>(d->getData());
 	auto f = this->getUper(id);
 	auto idw = Utils::from_utf8(id);
 	boost::wformat fmt(L"上传完毕，id:%1%");
@@ -237,7 +237,7 @@ void CMainDlg::up6_post_complete(long v)
 void CMainDlg::up6_post_stoped(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto id = boost::any_cast<string>(d);
+	auto id = boost::any_cast<string>(d->getData());
 	auto f = this->getUper(id);
 	auto idw = Utils::from_utf8(id);
 	boost::wformat fmt(L"上传停止，id:%1%");
@@ -248,7 +248,7 @@ void CMainDlg::up6_post_stoped(long v)
 void CMainDlg::up6_scan_process(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto id = boost::any_cast<string>(d);
+	auto id = boost::any_cast<string>(d->getData());
 	auto f = this->getUper(id);
 	auto idw = Utils::from_utf8(id);
 	auto perw = Utils::from_utf8(f->data.fileSvr.percent);
@@ -260,7 +260,7 @@ void CMainDlg::up6_scan_process(long v)
 void CMainDlg::up6_scan_complete(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto id = boost::any_cast<string>(d);
+	auto id = boost::any_cast<string>(d->getData());
 	auto f = this->getUper(id);
 	auto idw = Utils::from_utf8(id);
 	boost::wformat fmt(L"扫描完毕......，id:%2%");
@@ -276,7 +276,7 @@ void CMainDlg::up6_update_fd_complete(long v)
 void CMainDlg::up6_md5_process(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto id = boost::any_cast<string>(d);
+	auto id = boost::any_cast<string>(d->getData());
 	auto f = this->getUper(id);
 	auto idw = Utils::from_utf8(id);
 	auto perw = Utils::from_utf8(f->data.fileSvr.percent);
@@ -288,7 +288,7 @@ void CMainDlg::up6_md5_process(long v)
 void CMainDlg::up6_md5_complete(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto id = boost::any_cast<string>(d);
+	auto id = boost::any_cast<string>(d->getData());
 	auto idw = Utils::from_utf8(id);
 	auto f = this->getUper(id);
 	boost::wformat fmt(L"md5计算完毕,开始初始化文件，id:%1%");
@@ -299,7 +299,7 @@ void CMainDlg::up6_md5_complete(long v)
 void CMainDlg::up6_md5_error(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto id = boost::any_cast<string>(d);
+	auto id = boost::any_cast<string>(d->getData());
 	auto idw = Utils::from_utf8(id);
 	boost::wformat fmt(L"md5计算错误，id:%1%");
 	fmt % idw;
@@ -309,7 +309,7 @@ void CMainDlg::up6_md5_error(long v)
 void CMainDlg::up6_init_file_cmp(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto id = boost::any_cast<string>(d);
+	auto id = boost::any_cast<string>(d->getData());
 	auto idw = Utils::from_utf8(id);
 	boost::wformat fmt(L"文件初始化完毕，id:%1%");
 	fmt % idw;
@@ -319,10 +319,12 @@ void CMainDlg::up6_init_file_cmp(long v)
 void CMainDlg::up6_init_file_err(long v)
 {
 	auto d = this->data.mc->pop(v);
-	auto id = boost::any_cast<string>(d);
+	auto id = boost::any_cast<string>(d->getData());
+	auto f = this->getUper(id);
 	auto idw = Utils::from_utf8(id);
-	boost::wformat fmt(L"文件初始化错误，id:%1%");
-	fmt % idw;
+	auto errw = Utils::from_utf8( f->data.fileSvr.err );
+	boost::wformat fmt(L"文件初始化错误，id:%1%,err:%2%");
+	fmt % idw % errw;
 	this->addMsg(fmt.str());
 }
 

@@ -40,6 +40,7 @@ extern CAppModule _Module;
 #include <memory>
 #include <map>
 using namespace std;
+typedef std::shared_ptr<map<string, string>> mapStrPtr;
 
 #include <boost/serialization/singleton.hpp>
 #include <boost/signals2/signal.hpp>

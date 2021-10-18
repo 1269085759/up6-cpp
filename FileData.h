@@ -30,6 +30,7 @@ public:
 	string speed;//速度
 	string lenPost;//已传大小
 	string percent;//md5进度(已传进度)
+	string err;
 	bool complete;
 	bool deleted;
 };

@@ -223,7 +223,7 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
  Parameter: map<string
  Parameter: string> & header
 */
-bool Utils::http_get(const string& url, map<string,string>& hd, string& svr_res)
+bool Utils::http_get(const string& url, mapStrPtr hd, string& svr_res)
 {
 	bool hr = false;
 	std::stringstream response;
@@ -237,7 +237,7 @@ bool Utils::http_get(const string& url, map<string,string>& hd, string& svr_res)
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
 		curl_slist *header = NULL;
-		for (auto& h : hd)
+		for (auto& h : *hd)
 		{
 			string v = h.first + ":" + h.second;
 			header = curl_slist_append(header, v.c_str());

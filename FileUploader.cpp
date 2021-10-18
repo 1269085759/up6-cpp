@@ -32,6 +32,7 @@ void FileUploader::check_file()
 void FileUploader::init_file()
 {
 	//this->data.dlg->addMsg(L"开始初始化文件");
+	auto ptr=std::make_shared<map<string,string>>();
 	map<string, string> header = {
 		{"md5",this->data.fileSvr.md5},
 		{"id",this->data.fileSvr.id},
@@ -40,10 +41,15 @@ void FileUploader::init_file()
 		{"sizeLoc",this->data.fileSvr.sizeLoc},
 		{"pathLoc",this->data.fileSvr.pathLoc},
 	};
+
+	for (auto& h : header)
+	{
+		(*ptr).insert( std::make_pair(h.first, h.second));
+	}
 	
-	boost::thread td([this,&header]() {
+	boost::thread td([this,ptr]() {
 		string response;
-		if (Utils::http_get(this->data.cfg.get("UrlCreate", "").asString(), header, response))
+		if (Utils::http_get(this->data.cfg.get("UrlCreate", "").asString(), ptr, this->data.fileSvr.err))
 		{
 			this->init_file_complete();
 		}
@@ -58,6 +64,7 @@ void FileUploader::init_file_complete()
 {
 	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
 	this->data.tm->post("init_file_cmp", d->getID() );
+	//开始上传
 }
 
 void FileUploader::init_file_error()
@@ -69,7 +76,7 @@ void FileUploader::init_file_error()
 void FileUploader::post_file()
 {
 	Json::Value v;
-	v["name"] = "check_file";
+	v["name"] = "post_file";
 	v["id"] = this->data.fileSvr.id;
 	Json::Value fields;
 	fields["uid"] = this->data.fileSvr.uid;
