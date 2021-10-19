@@ -124,7 +124,7 @@ void CMainDlg::up6_component_init()
 	}
 	else
 	{
-		this->addMsg(L"初始化失败");
+		this->addMsg(L"解析配置文件失败，请检查配置文件语法");
 		auto dw = Utils::from_utf8(data);
 		this->addMsg(dw);
 	}
@@ -313,7 +313,7 @@ void CMainDlg::up6_init_file_cmp(long v)
 	auto d = this->data.mc->pop(v);
 	auto id = boost::any_cast<string>(d->getData());
 	auto idw = Utils::from_utf8(id);
-	boost::wformat fmt(L"文件初始化完毕，id:%1%");
+	boost::wformat fmt(L"文件初始化完毕，开始上传，id:%1%");
 	fmt % idw;
 	this->addMsg(fmt.str());
 }

@@ -249,16 +249,13 @@ bool Utils::http_get(string url, mapStrPtr hd, string& svr_res)
 		CURLcode res = curl_easy_perform(curl);
 		int httpstate = 0;
 		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpstate);
+		hr = res == CURLE_OK;
+		if (hr) hr = 200 == httpstate;
 		/* Check for errors */
-		if (res != CURLE_OK || 200 != httpstate)
-		{
-		}
-		else
+		if(hr)
 		{
 			svr_res = response.str();
 			svr_res = Utils::url_decode(svr_res);
-			Json::Value json;
-			hr = Utils::parse(svr_res, json);
 		}
 
 		/* always cleanup */

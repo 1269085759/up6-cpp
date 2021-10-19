@@ -49,12 +49,25 @@ void FileUploader::init_file()
 	
 	boost::thread td([this,ptr]() {
 		string response;
-		if (Utils::http_get(this->data.cfg.get("UrlCreate", "").asString(), ptr, this->data.fileSvr.err))
+		if (Utils::http_get(this->data.cfg.get("UrlCreate", "").asString(), ptr, response))
 		{
+			//res = callback(json)
+			auto pos = response.find("{");
+			if (pos != string::npos) pos = response.find("{", pos+1);
+			auto end = response.rfind("}");
+			if (end != string::npos) end = response.rfind("}", end-1);
+
+			response = response.substr(pos,end-pos+1);
+
+			Json::Value json;
+			auto res = Utils::parse(response, json);
+			this->data.fileSvr.pathSvr = json["pathSvr"].asString();
+			this->data.fileSvr.lenSvr = json["lenSvr"].asInt64();
 			this->init_file_complete();
 		}
 		else
 		{
+			this->data.fileSvr.err = response;
 			this->init_file_error();
 		}
 	});
@@ -65,6 +78,7 @@ void FileUploader::init_file_complete()
 	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
 	this->data.tm->post("init_file_cmp", d->getID() );
 	//开始上传
+	this->post_file();
 }
 
 void FileUploader::init_file_error()
