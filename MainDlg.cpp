@@ -115,6 +115,8 @@ void CMainDlg::up6_component_init()
 	auto dir = Utils::curDir();
 	dir.append(L"config.js");
 
+	this->addMsg(L"¼Ó½ØÅäÖÃÎÄ¼ş£º" + dir);
+
 	long len = 0;
 	auto data = Utils::ReadAll(dir, len);
 	Json::Reader jr;

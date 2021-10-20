@@ -49,7 +49,7 @@ void Up6Impl::init(Json::Value& cfg)
 	HRESULT hr = ::CLSIDFromProgID(L"Xproer.HttpPartition6.1", &clsid);
 	if (!SUCCEEDED(hr))
 	{
-		MessageBoxW(nullptr,L"创建组件失败，请先安装或注册组件", L"错误", MB_OK);
+		this->data.dlg->addMsg(L"创建组件失败，请先安装或注册组件");
 		return;
 	}
 
