@@ -12,6 +12,9 @@ CAppModule _Module;
 int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR /*lpstrCmdLine*/, int /*nCmdShow*/)
 {
 	HRESULT hRes = ::CoInitialize(NULL);
+	//加载CRichEdit动态链接库
+	HMODULE hMod = ::LoadLibrary(CRichEditCtrl::GetLibraryName());
+
 // If you are running on NT 4.0 or higher you can use the following call instead to 
 // make the EXE free threaded. This means that calls come in on a random RPC thread.
 //	HRESULT hRes = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
@@ -33,6 +36,8 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR /*
 	}
 
 	_Module.Term();
+	//释放CRichEdit动态链接库
+	::FreeLibrary(hMod);
 	::CoUninitialize();
 	curl_global_cleanup();//卸载
 	return nRet;

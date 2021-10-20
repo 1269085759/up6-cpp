@@ -89,6 +89,57 @@ wstring Utils::from_utf8(const string& a)
 	return w;
 }
 
+string Utils::url_safe_encode(const std::string& txt)
+{
+	string dst = Utils::url_encode(txt);
+	boost::replace_all(dst, "%3F", "?");
+	boost::replace_all(dst, "%3D", "=");
+	boost::replace_all(dst, "%26", "&");
+	boost::replace_all(dst, "%3A", ":");
+	boost::replace_all(dst, "%2F", "/");
+	return dst;
+}
+
+std::string Utils::url_encode(const std::string& txt)
+{
+	std::string src = txt;
+	char hex[] = "0123456789ABCDEF";
+	string dst;
+
+
+	for (size_t i = 0; i < src.size(); ++i)
+	{
+		unsigned char cc = src[i];
+		if (cc >= 'A' && cc <= 'Z'
+			|| cc >= 'a' && cc <= 'z'
+			|| cc >= '0' && cc <= '9'
+			|| cc == '.'
+			|| cc == '_'
+			|| cc == '-'
+			|| cc == '*'
+			|| cc == ':'
+			|| cc == '/'
+			|| cc == '('
+			|| cc == ')')
+		{
+			if (cc == ' ')
+			{
+				dst += "+";
+			}
+			else
+				dst += cc;
+		}
+		else
+		{
+			unsigned char c = static_cast<unsigned char>(src[i]);
+			dst += '%';
+			dst += hex[c / 16];
+			dst += hex[c % 16];
+		}
+	}
+	return dst;
+}
+
 string Utils::url_decode(const string& src)
 {
 	std::string dst, dsturl;

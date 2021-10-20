@@ -38,8 +38,8 @@ void FileUploader::init_file()
 		{"id",this->data.fileSvr.id},
 		{"uid", std::to_string( this->data.fileSvr.uid) },
 		{"lenLoc",std::to_string( this->data.fileSvr.lenLoc) },
-		{"sizeLoc",this->data.fileSvr.sizeLoc},
-		{"pathLoc",this->data.fileSvr.pathLoc},
+		{"sizeLoc",Utils::url_encode( this->data.fileSvr.sizeLoc) },
+		{"pathLoc",Utils::url_encode( this->data.fileSvr.pathLoc) },
 	};
 
 	for (auto& h : header)

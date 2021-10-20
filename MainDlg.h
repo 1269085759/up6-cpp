@@ -48,6 +48,7 @@ public:
 	std::shared_ptr<FileUploader> getUper(string id);
 
 	//event
+	void send_msg(long v);
 	void up6_sel_files(Json::Value& v);
 	void up6_sel_folder(Json::Value& v);
 	void up6_post_process(long v);
@@ -67,7 +68,7 @@ public:
 
 private:
 	CButton m_btnOpenFile;
-	CEdit m_edtMsg;
+	CRichEditCtrl m_edtMsg;
 	std::shared_ptr<Up6Impl> m_up6;
 	DataDef data;
 };

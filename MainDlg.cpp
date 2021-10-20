@@ -12,7 +12,7 @@
 LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	this->m_btnOpenFile.Attach(this->GetDlgItem(BTN_OPENFILE));
-	this->m_edtMsg.Attach(this->GetDlgItem(TB_FILES));
+	this->m_edtMsg.Attach(this->GetDlgItem(TB_MSG));
 	
 	// center the dialog on the screen
 	CenterWindow();
@@ -30,6 +30,7 @@ LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 	//bind msg
 	this->data.tm->m_form = m_hWnd;
 	boost::assign::insert(this->data.tm->m_handler)
+		("send_msg", boost::bind(&CMainDlg::send_msg, this, _1))
 		("md5_process", boost::bind(&CMainDlg::up6_md5_process, this, _1))
 		("md5_complete", boost::bind(&CMainDlg::up6_md5_complete, this, _1))
 		("md5_error", boost::bind(&CMainDlg::up6_md5_error, this, _1))
@@ -153,6 +154,13 @@ std::shared_ptr<FileUploader> CMainDlg::getUper(string id)
 		u = ret->second;
 	}
 	return u;
+}
+
+void CMainDlg::send_msg(long v)
+{
+	auto d = this->data.mc->pop(v);
+	auto msg = boost::any_cast<string>(d->getData());
+	this->m_edtMsg.AppendText( Utils::from_utf8(msg).c_str() );
 }
 
 void CMainDlg::up6_sel_files(Json::Value& v)
