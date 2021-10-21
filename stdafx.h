@@ -68,6 +68,7 @@ using namespace boost::signals2;
 #include "components/MsgData.h"
 #include "components/ThreadMessage.h"
 #include "FileUploader.h"
+#include "FolderUploader.h"
 
 #include "link-json.h"
 #include "link-libcurl.h"

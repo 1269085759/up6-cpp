@@ -57,6 +57,9 @@
     <ClCompile Include="components\MsgCenter.cpp">
       <Filter>components</Filter>
     </ClCompile>
+    <ClCompile Include="FolderUploader.cpp">
+      <Filter>biz</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="components\MsgCenter.h">
       <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="FolderUploader.h">
+      <Filter>biz</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

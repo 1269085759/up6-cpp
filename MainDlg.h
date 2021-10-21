@@ -51,18 +51,27 @@ public:
 	void send_msg(long v);
 	void up6_sel_files(Json::Value& v);
 	void up6_sel_folder(Json::Value& v);
-	void up6_post_process(long v);
-	void up6_post_error(long v);
-	void up6_post_complete(long v);
-	void up6_post_stoped(long v);
-	void up6_scan_process(long v);
-	void up6_scan_complete(long v);
+
+	//file event
+	void file_post_process(long v);
+	void file_post_error(long v);
+	void file_post_complete(long v);
+	void file_post_stoped(long v);
+	void file_md5_process(long v);
+	void file_md5_complete(long v);
+	void file_md5_error(long v);
+	void file_init_file_cmp(long v);
+	void file_init_file_err(long v);
+	
+	//folder event
+	void folder_scan_process(long v);
+	void folder_scan_complete(long v);
+	void folder_post_process(long v);
+	void folder_post_error(long v);
+	void folder_post_complete(long v);
+	void folder_post_stoped(long v);
+
 	void up6_update_fd_complete(long v);
-	void up6_md5_process(long v);
-	void up6_md5_complete(long v);
-	void up6_md5_error(long v);
-	void up6_init_file_cmp(long v);
-	void up6_init_file_err(long v);
 	void up6_add_folder_err(long v);
 	void up6_load_complete(long v);
 

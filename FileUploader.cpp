@@ -78,7 +78,7 @@ void FileUploader::init_file_complete()
 	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
 	this->data.tm->post("init_file_cmp", d->getID() );
 	//开始上传
-	this->post_file();
+	this->post();
 }
 
 void FileUploader::init_file_error()
@@ -87,7 +87,7 @@ void FileUploader::init_file_error()
 	this->data.tm->post("init_file_err", d->getID() );
 }
 
-void FileUploader::post_file()
+void FileUploader::post()
 {
 	Json::Value v;
 	v["name"] = "post_file";
@@ -166,16 +166,4 @@ void FileUploader::post_stoped(Json::Value v)
 {
 	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
 	this->data.tm->post("post_stoped", d->getID());
-}
-
-void FileUploader::scan_process(Json::Value v)
-{
-	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
-	this->data.tm->post("scan_process", d->getID());
-}
-
-void FileUploader::scan_complete(Json::Value v)
-{
-	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
-	this->data.tm->post("scan_complete", d->getID());
 }

@@ -210,6 +210,7 @@
     <ClCompile Include="components\ThreadMessage.cpp" />
     <ClCompile Include="FileData.cpp" />
     <ClCompile Include="FileUploader.cpp" />
+    <ClCompile Include="FolderUploader.cpp" />
     <ClCompile Include="MainDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -227,6 +228,7 @@
     <ClInclude Include="components\ThreadMessage.h" />
     <ClInclude Include="FileData.h" />
     <ClInclude Include="FileUploader.h" />
+    <ClInclude Include="FolderUploader.h" />
     <ClInclude Include="HttpUploaderApp_i.h" />
     <ClInclude Include="MainDlg.h" />
     <ClInclude Include="resource.h" />

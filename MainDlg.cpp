@@ -31,17 +31,22 @@ LRESULT CMainDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam
 	this->data.tm->m_form = m_hWnd;
 	boost::assign::insert(this->data.tm->m_handler)
 		("send_msg", boost::bind(&CMainDlg::send_msg, this, _1))
-		("md5_process", boost::bind(&CMainDlg::up6_md5_process, this, _1))
-		("md5_complete", boost::bind(&CMainDlg::up6_md5_complete, this, _1))
-		("md5_error", boost::bind(&CMainDlg::up6_md5_error, this, _1))
-		("init_file_cmp", boost::bind(&CMainDlg::up6_init_file_cmp, this, _1))
-		("init_file_err", boost::bind(&CMainDlg::up6_init_file_err, this, _1))
-		("post_process", boost::bind(&CMainDlg::up6_post_process, this, _1))
-		("post_error", boost::bind(&CMainDlg::up6_post_error, this, _1))
-		("post_complete", boost::bind(&CMainDlg::up6_post_complete, this, _1))
-		("post_stoped", boost::bind(&CMainDlg::up6_post_stoped, this, _1))
-		("scan_process", boost::bind(&CMainDlg::up6_scan_process, this, _1))
-		("scan_complete", boost::bind(&CMainDlg::up6_scan_complete, this, _1));
+		("md5_process", boost::bind(&CMainDlg::file_md5_process, this, _1))
+		("md5_complete", boost::bind(&CMainDlg::file_md5_complete, this, _1))
+		("md5_error", boost::bind(&CMainDlg::file_md5_error, this, _1))
+		("init_file_cmp", boost::bind(&CMainDlg::file_init_file_cmp, this, _1))
+		("init_file_err", boost::bind(&CMainDlg::file_init_file_err, this, _1))
+		("post_process", boost::bind(&CMainDlg::file_post_process, this, _1))
+		("post_error", boost::bind(&CMainDlg::file_post_error, this, _1))
+		("post_complete", boost::bind(&CMainDlg::file_post_complete, this, _1))
+		("post_stoped", boost::bind(&CMainDlg::file_post_stoped, this, _1))
+		("folder_scan_process", boost::bind(&CMainDlg::folder_scan_process, this, _1))
+		("folder_scan_complete", boost::bind(&CMainDlg::folder_scan_complete, this, _1))
+		("folder_post_process", boost::bind(&CMainDlg::folder_post_process, this, _1))
+		("folder_post_error", boost::bind(&CMainDlg::folder_post_error, this, _1))
+		("folder_post_complete", boost::bind(&CMainDlg::folder_post_complete, this, _1))
+		("folder_post_stoped", boost::bind(&CMainDlg::folder_post_stoped, this, _1))
+		;
 
 	this->up6_component_init();
 
@@ -208,9 +213,22 @@ void CMainDlg::up6_sel_folder(Json::Value& v)
 	this->m_edtMsg.AppendText(L"目录路径：");
 	this->m_edtMsg.AppendText(Utils::from_utf8(pathLoc).c_str());
 	this->m_edtMsg.AppendText(L"\r\n");
+
+	auto fd = std::make_shared<FolderUploader>(this->m_up6.get(), this);
+	fd->data.tm = this->data.tm;
+	fd->data.mc = this->data.mc;
+	fd->data.cfg = this->data.cfg;
+	fd->data.fileSvr.id = id;
+	fd->data.fileSvr.nameLoc = nameLoc;
+	fd->data.fileSvr.pathLoc = pathLoc;
+	this->data.files.insert(std::make_pair(id, fd));
+
+	boost::thread td([fd]() {
+		fd->scan();
+	});
 }
 
-void CMainDlg::up6_post_process(long v)
+void CMainDlg::file_post_process(long v)
 {
 	auto d = this->data.mc->pop(v);
 	auto id = boost::any_cast<string>(d->getData());
@@ -224,7 +242,7 @@ void CMainDlg::up6_post_process(long v)
 	this->addMsg(fmt.str());
 }
 
-void CMainDlg::up6_post_error(long v)
+void CMainDlg::file_post_error(long v)
 {
 	auto d = this->data.mc->pop(v);
 	auto id = boost::any_cast<string>(d->getData());
@@ -235,7 +253,7 @@ void CMainDlg::up6_post_error(long v)
 	this->addMsg(fmt.str());
 }
 
-void CMainDlg::up6_post_complete(long v)
+void CMainDlg::file_post_complete(long v)
 {
 	auto d = this->data.mc->pop(v);
 	auto id = boost::any_cast<string>(d->getData());
@@ -246,7 +264,7 @@ void CMainDlg::up6_post_complete(long v)
 	this->addMsg(fmt.str());
 }
 
-void CMainDlg::up6_post_stoped(long v)
+void CMainDlg::file_post_stoped(long v)
 {
 	auto d = this->data.mc->pop(v);
 	auto id = boost::any_cast<string>(d->getData());
@@ -257,7 +275,7 @@ void CMainDlg::up6_post_stoped(long v)
 	this->addMsg(fmt.str());
 }
 
-void CMainDlg::up6_scan_process(long v)
+void CMainDlg::folder_scan_process(long v)
 {
 	auto d = this->data.mc->pop(v);
 	auto id = boost::any_cast<string>(d->getData());
@@ -269,13 +287,60 @@ void CMainDlg::up6_scan_process(long v)
 	this->addMsg(fmt.str());
 }
 
-void CMainDlg::up6_scan_complete(long v)
+void CMainDlg::folder_scan_complete(long v)
 {
 	auto d = this->data.mc->pop(v);
 	auto id = boost::any_cast<string>(d->getData());
 	auto f = this->getUper(id);
 	auto idw = Utils::from_utf8(id);
-	boost::wformat fmt(L"扫描完毕......，id:%2%");
+	boost::wformat fmt(L"扫描完毕......，id:%1%");
+	fmt % idw;
+	this->addMsg(fmt.str());
+}
+
+void CMainDlg::folder_post_process(long v)
+{
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d->getData());
+	auto f = this->getUper(id);
+	auto idw = Utils::from_utf8(id);
+	auto lenw = Utils::from_utf8(f->data.fileSvr.lenPost);
+	auto spedw = Utils::from_utf8(f->data.fileSvr.speed);
+	auto timew = Utils::from_utf8(f->data.fileSvr.time);
+	boost::wformat fmt(L"目录上传中......，speed:%1%,postLen:%2%,time:%3% id:%4%");
+	fmt % spedw % lenw % timew % idw;
+	this->addMsg(fmt.str());
+}
+
+void CMainDlg::folder_post_error(long v)
+{
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d->getData());
+	auto f = this->getUper(id);
+	auto idw = Utils::from_utf8(id);
+	boost::wformat fmt(L"目录上传错误，id:%1%");
+	fmt % idw;
+	this->addMsg(fmt.str());
+}
+
+void CMainDlg::folder_post_complete(long v)
+{
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d->getData());
+	auto f = this->getUper(id);
+	auto idw = Utils::from_utf8(id);
+	boost::wformat fmt(L"目录上传完毕，id:%1%");
+	fmt % idw;
+	this->addMsg(fmt.str());
+}
+
+void CMainDlg::folder_post_stoped(long v)
+{
+	auto d = this->data.mc->pop(v);
+	auto id = boost::any_cast<string>(d->getData());
+	auto f = this->getUper(id);
+	auto idw = Utils::from_utf8(id);
+	boost::wformat fmt(L"目录上传停止，id:%1%");
 	fmt % idw;
 	this->addMsg(fmt.str());
 }
@@ -285,7 +350,7 @@ void CMainDlg::up6_update_fd_complete(long v)
 
 }
 
-void CMainDlg::up6_md5_process(long v)
+void CMainDlg::file_md5_process(long v)
 {
 	auto d = this->data.mc->pop(v);
 	auto id = boost::any_cast<string>(d->getData());
@@ -297,7 +362,7 @@ void CMainDlg::up6_md5_process(long v)
 	this->addMsg(fmt.str());
 }
 
-void CMainDlg::up6_md5_complete(long v)
+void CMainDlg::file_md5_complete(long v)
 {
 	auto d = this->data.mc->pop(v);
 	auto id = boost::any_cast<string>(d->getData());
@@ -308,7 +373,7 @@ void CMainDlg::up6_md5_complete(long v)
 	this->addMsg(fmt.str());
 }
 
-void CMainDlg::up6_md5_error(long v)
+void CMainDlg::file_md5_error(long v)
 {
 	auto d = this->data.mc->pop(v);
 	auto id = boost::any_cast<string>(d->getData());
@@ -318,7 +383,7 @@ void CMainDlg::up6_md5_error(long v)
 	this->addMsg(fmt.str());
 }
 
-void CMainDlg::up6_init_file_cmp(long v)
+void CMainDlg::file_init_file_cmp(long v)
 {
 	auto d = this->data.mc->pop(v);
 	auto id = boost::any_cast<string>(d->getData());
@@ -328,7 +393,7 @@ void CMainDlg::up6_init_file_cmp(long v)
 	this->addMsg(fmt.str());
 }
 
-void CMainDlg::up6_init_file_err(long v)
+void CMainDlg::file_init_file_err(long v)
 {
 	auto d = this->data.mc->pop(v);
 	auto id = boost::any_cast<string>(d->getData());
