@@ -137,6 +137,30 @@ void FolderUploader::post_complete(Json::Value v)
 {
 	auto d = this->data.mc->make_msg(this->data.fileSvr.id);
 	this->data.tm->post("folder_post_complete", d->getID());
+
+	//
+	auto time = boost::posix_time::microsec_clock::universal_time();//微秒精度
+	boost::posix_time::ptime epoch(boost::gregorian::date(1970, boost::gregorian::Jan, 1));
+	boost::posix_time::time_duration time_from_epoch =
+		boost::posix_time::second_clock::universal_time() - epoch;
+
+	auto ptr = std::make_shared<map<string, string>>();
+	map<string, string> header = {
+		{"id",this->data.fileSvr.id},
+		{"uid", std::to_string(this->data.fileSvr.uid) },
+		{"time", std::to_string(time_from_epoch.total_seconds()) }
+	};
+
+	for (auto& h : header)
+	{
+		(*ptr).insert(std::make_pair(h.first, h.second));
+	}
+
+	//通知服务器
+	boost::thread td([this, ptr]() {
+		string response;
+		Utils::http_get(this->data.cfg.get("UrlFdComplete", "").asString(), ptr, response);
+	});
 }
 
 void FolderUploader::post_error(Json::Value v)
